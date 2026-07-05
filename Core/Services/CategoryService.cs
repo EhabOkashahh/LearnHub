@@ -1,0 +1,52 @@
+using AutoMapper;
+using Domain.Contracts;
+using Domain.Entities.Courses;
+using ServicesAbstraction.Categories;
+using Services.Specifications.CategorySpecifications;
+using Shared.DTOS;
+using Shared.DTOS.Categories;
+
+namespace Services
+{
+    public class CategoryService(IUnitOfWork _uof, IMapper _mapper) : ICategoriesService
+    {
+        public async Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync(CancellationToken ct)
+        {
+            var spec = new CategorySpec();
+            var categories = await _uof.GetRepository<Guid, Category>().GetAllAsync(spec, ct);
+            return _mapper.Map<IEnumerable<CategoryResponse>>(categories);
+        }
+
+        public async Task<CategoryResponse?> GetCategoryByIdAsync(Guid Id, CancellationToken ct)
+        {
+            var spec = new CategorySpec(Id);
+            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            return _mapper.Map<CategoryResponse>(category);
+        }
+
+        public async Task<int> CreateCategoryAsync(CreateCategoryRequest request, CancellationToken ct)
+        {
+            var category = _mapper.Map<Category>(request);
+            await _uof.GetRepository<Guid, Category>().AddAsync(category);
+            return await _uof.SaveChangesAsync(ct);
+        }
+
+        public async Task<int> UpdateCategoryAsync(Guid Id, UpdateCategoryRequest request, CancellationToken ct)
+        {
+            var spec = new CategorySpec(Id);
+            var categoryExists = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            if (categoryExists is null) return 0;
+
+            var res = _mapper.Map(request, categoryExists);
+            _uof.GetRepository<Guid, Category>().Update(res);
+
+            return await _uof.SaveChangesAsync(ct);
+        }
+
+        public async Task<int> DeleteCategoryAsync(Guid Id, CancellationToken ct)
+        {
+            _uof.GetRepository<Guid, Category>().Delete(Id);
+            return await _uof.SaveChangesAsync(ct);
+        }
+    }
+}

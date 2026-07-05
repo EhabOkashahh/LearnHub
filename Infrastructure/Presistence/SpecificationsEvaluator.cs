@@ -15,9 +15,9 @@ namespace Presistence
         {
             var query = InputQuery;
 
-            if(spec.IncludeExpression.Count() > 0)
+            if(spec.IncludeExpression.Count > 0)
             {
-                spec.IncludeExpression.Aggregate(query, (current, includeExpession) => current.Include(includeExpession));
+                query = spec.IncludeExpression.Aggregate(query, (current, includeExpession) => current.Include(includeExpession));
             }
 
             if(spec.Criteria is not null)

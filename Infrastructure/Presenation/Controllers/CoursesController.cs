@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Entities.Courses.Enums;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared.DTOS;
+using Shared.DTOS.Courses;
 
 namespace Presenation.Controllers
 {
@@ -13,18 +15,18 @@ namespace Presenation.Controllers
     public class CoursesController(IServiceManager serviceManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllCourses(CancellationToken ct)
+        public async Task<IActionResult> GetAllCourses([FromQuery] CourseLevel? Level,Guid? CategpryId,CancellationToken ct)
         {
-            var courses = await serviceManager.CourseService.GetAllCoursesAsync(ct);
+            var courses = await serviceManager.CourseService.GetAllCoursesAsync(Level, CategpryId, ct);
             return Ok(courses);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCourseById(Guid? id)
+        public async Task<IActionResult> GetCourseById(Guid? id, CancellationToken ct)
         {
             if(id == null) return BadRequest();
 
-            var course = await serviceManager.CourseService.GetCourseByIdAsync(id.Value , CancellationToken.None);
+            var course = await serviceManager.CourseService.GetCourseByIdAsync(id.Value , ct);
             if(course == null) return NotFound();
 
             return Ok(course);

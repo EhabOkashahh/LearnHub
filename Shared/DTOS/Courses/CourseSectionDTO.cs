@@ -1,4 +1,4 @@
-namespace Shared.DTOS
+namespace Shared.DTOS.Courses
 {
     public class CourseSectionDTO
     {

@@ -4,6 +4,7 @@ using Presistence.Data.Contexts;
 using Services;
 using Services.Mapping;
 using ServicesAbstraction;
+using ServicesAbstraction.Categories;
 using ServicesAbstraction.Courses;
 using Scalar.AspNetCore;
 using Presistence.Data;
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(CoursesProfile).Assembly));
 builder.Services.AddScoped<ICoursesService, CourseService>();
+builder.Services.AddScoped<ICategoriesService, CategoryService>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

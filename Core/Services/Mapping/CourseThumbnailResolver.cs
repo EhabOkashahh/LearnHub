@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Entities.Courses;
 using Shared.DTOS;
+using Shared.DTOS.Courses;
 
 namespace Services.Mapping
 {

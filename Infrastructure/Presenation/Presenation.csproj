@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ServicesAbstraction\ServicesAbstraction.csproj" />
+    <ProjectReference Include="..\..\Core\Domain\Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

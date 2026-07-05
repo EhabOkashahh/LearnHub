@@ -1,15 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Domain.Entities.Courses;
+using Domain.Entities.Courses.Enums;
 
 namespace Services.Specifications.CoursesSpecifications
 {
     public class CoursesSpec : Specifications<Guid,Course>
     {
         public CoursesSpec(Guid id) : base(C => C.Id == id)
+        {
+            ApplyIncludeExpression();
+        }
+        public CoursesSpec(CourseLevel? Level, Guid? CategpryId) 
+        : base(C => (!Level.HasValue || C.Level == Level) && (!CategpryId.HasValue || C.CategoryId == CategpryId))
         {
             ApplyIncludeExpression();
         }

@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities.Courses.Enums;
 using ServicesAbstraction.Courses;
 using Shared.DTOS;
+using Shared.DTOS.Courses;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities.Courses;
 using Domain.Contracts;
@@ -12,7 +13,7 @@ namespace Services
 {
     public class CourseService(IUnitOfWork _uof, IMapper _mapper) : ICoursesService
     {
-        public async Task<IEnumerable<CourseResponse>> GetAllCoursesAsync(CancellationToken ct)
+        public async Task<IEnumerable<CourseResponse>> GetAllCoursesAsync(CourseLevel? Level, Guid? CategpryId, CancellationToken ct)
         {
             var spec = new CoursesSpec();
             var courses = await _uof.GetRepository<Guid,Course>().GetAllAsync(spec,ct);
