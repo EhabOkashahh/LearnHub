@@ -11,7 +11,7 @@ namespace Domain.Entities.Courses
         public CourseStatus Status { get; set; } = CourseStatus.Draft;
         public int TotalDurationMinutes { get; set; }
         public CourseLevel Level { get; set; }
-
+        public decimal Price { get; set; }
         public Guid CategoryId { get; set; }
 
         public Category Category { get; set; } = null!;      

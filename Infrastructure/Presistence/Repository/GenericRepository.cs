@@ -11,7 +11,7 @@ namespace Presistence.Repository
         {
            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).ToListAsync(ct);
         }
-        public async Task<TEntity> GetAsync(ISpecifications<Tkey,TEntity> spec, Tkey key, CancellationToken ct)
+        public async Task<TEntity?> GetAsync(ISpecifications<Tkey,TEntity> spec, Tkey key, CancellationToken ct)
         {
             return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).FirstOrDefaultAsync(ct);
         }
