@@ -15,9 +15,9 @@ namespace Presenation.Controllers
     public class CoursesController(IServiceManager serviceManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllCourses([FromQuery] CourseLevel? Level,Guid? CategpryId,CancellationToken ct)
+        public async Task<IActionResult> GetAllCourses([FromQuery]CourseQueryParams queryParams, CancellationToken ct)
         {
-            var courses = await serviceManager.CourseService.GetAllCoursesAsync(Level, CategpryId, ct);
+            var courses = await serviceManager.CourseService.GetAllCoursesAsync(queryParams,ct);
             return Ok(courses);
         }
 

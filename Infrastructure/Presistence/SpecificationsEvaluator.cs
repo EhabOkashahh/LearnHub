@@ -15,14 +15,37 @@ namespace Presistence
         {
             var query = InputQuery;
 
-            if(spec.IncludeExpression.Count > 0)
-            {
-                query = spec.IncludeExpression.Aggregate(query, (current, includeExpession) => current.Include(includeExpession));
-            }
-
+            // Filtering
             if(spec.Criteria is not null)
             {
                 query = query.Where(spec.Criteria);
+            }
+
+            
+            
+
+
+            // Sorting
+            if(spec.OrderByAsc is not null)
+            {
+                query = query.OrderBy(spec.OrderByAsc);
+            }
+            else if(spec.OrderByDesc is not null)
+            {
+                query = query.OrderByDescending(spec.OrderByDesc);
+            }
+
+            // Pagination
+            if (spec.IsPaginated)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            }
+
+
+
+            if(spec.IncludeExpression.Count > 0)
+            {
+                query = spec.IncludeExpression.Aggregate(query, (current, includeExpession) => current.Include(includeExpession));
             }
 
             return query;

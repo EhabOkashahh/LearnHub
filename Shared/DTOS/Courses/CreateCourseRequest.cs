@@ -10,6 +10,7 @@ namespace Shared.DTOS.Courses
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public string ThumbnailUrl { get; set; } = null!;
+        public decimal Price { get; set; }
         public string Level { get; set; } = null!;
         public Guid CategoryId { get; set; }
     }

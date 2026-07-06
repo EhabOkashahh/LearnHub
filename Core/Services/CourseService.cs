@@ -8,17 +8,25 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Entities.Courses;
 using Domain.Contracts;
 using Services.Specifications.CoursesSpecifications;
+using System.Globalization;
 
 namespace Services
 {
     public class CourseService(IUnitOfWork _uof, IMapper _mapper) : ICoursesService
     {
-        public async Task<IEnumerable<CourseResponse>> GetAllCoursesAsync(CourseLevel? Level, Guid? CategpryId, CancellationToken ct)
+        public async Task<PaginatedResponse<CourseResponse>> GetAllCoursesAsync(CourseQueryParams queryParams,CancellationToken ct)
         {
-            var spec = new CoursesSpec();
+            var spec = new CoursesSpec(queryParams);
             var courses = await _uof.GetRepository<Guid,Course>().GetAllAsync(spec,ct);
-            return _mapper.Map<IEnumerable<CourseResponse>>(courses);
+            var res = _mapper.Map<IEnumerable<CourseResponse>>(courses);
+            
+
+            var CountSpec = new CourseSpecifiationWihtoutPagination<Guid,Course>(queryParams);
+            var totalCount = await _uof.GetRepository<Guid,Course>().GetCountAsync(CountSpec);
+
+            return new PaginatedResponse<CourseResponse>(queryParams.PageIndex.Value, queryParams.PageSize.Value, totalCount,res);
         }
+
 
         public async Task<CourseResponse?> GetCourseByIdAsync(Guid Id, CancellationToken ct)
         {

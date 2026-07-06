@@ -9,20 +9,30 @@ namespace Presistence.Repository
     {
         public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<Tkey,TEntity> spec, CancellationToken ct ,bool ChangeTrackr = false)
         {
-           return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).ToListAsync(ct);
+           return ChangeTrackr ? await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).ToListAsync(ct) :
+                                  await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).AsNoTracking().ToListAsync(ct);
         }
+
         public async Task<TEntity?> GetAsync(ISpecifications<Tkey,TEntity> spec, Tkey key, CancellationToken ct)
         {
-            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).FirstOrDefaultAsync(ct);
+            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).AsNoTracking().FirstOrDefaultAsync(ct);
         }
+
         public async Task AddAsync(TEntity entity)
         {
            await _context.AddAsync(entity);
         }
+
         public void Update(TEntity entity)
         {
             _context.Update(entity);
         }
+
+        public async Task<int> GetCountAsync(ISpecifications<Tkey, TEntity> spec)
+        {
+            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).CountAsync();
+        }
+
         public void Delete(Tkey key)
         {
             var entity = _context.Set<TEntity>().Find(key);
@@ -33,5 +43,7 @@ namespace Presistence.Repository
                 _context.Update(entity);
             }
         }
+
+        
     }
 }
