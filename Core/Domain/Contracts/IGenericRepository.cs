@@ -12,6 +12,7 @@ namespace Domain.Contracts
         Task<TEntity?> GetAsync(ISpecifications<Tkey,TEntity> spec, Tkey key, CancellationToken ct);
         Task AddAsync(TEntity entity);
         Task<int> GetCountAsync(ISpecifications<Tkey,TEntity> spec);
+        Task<bool> IsExsists(ISpecifications<Tkey,TEntity> spec);
         void Update(TEntity entity);
         void Delete(Tkey key);
     }

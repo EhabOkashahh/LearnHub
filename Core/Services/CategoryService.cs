@@ -1,6 +1,7 @@
 using AutoMapper;
 using Domain.Contracts;
 using Domain.Entities.Courses;
+using Domain.Exceptions.NotFoundExceptions;
 using ServicesAbstraction.Categories;
 using Services.Specifications.CategorySpecifications;
 using Shared.DTOS;
@@ -21,32 +22,34 @@ namespace Services
         {
             var spec = new CategorySpec(Id);
             var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            if (category is null) throw new CateoryNotFoundException(Id);
+
             return _mapper.Map<CategoryResponse>(category);
         }
 
-        public async Task<int> CreateCategoryAsync(CreateCategoryRequest request, CancellationToken ct)
+        public async Task CreateCategoryAsync(CreateCategoryRequest request, CancellationToken ct)
         {
             var category = _mapper.Map<Category>(request);
             await _uof.GetRepository<Guid, Category>().AddAsync(category);
-            return await _uof.SaveChangesAsync(ct);
+            await _uof.SaveChangesAsync(ct);
         }
 
-        public async Task<int> UpdateCategoryAsync(Guid Id, UpdateCategoryRequest request, CancellationToken ct)
+        public async Task UpdateCategoryAsync(Guid Id, UpdateCategoryRequest request, CancellationToken ct)
         {
             var spec = new CategorySpec(Id);
-            var categoryExists = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
-            if (categoryExists is null) return 0;
+            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            if (category is null) throw new CateoryNotFoundException(Id);
 
-            var res = _mapper.Map(request, categoryExists);
-            _uof.GetRepository<Guid, Category>().Update(res);
-
-            return await _uof.SaveChangesAsync(ct);
+            _mapper.Map(request, category);
         }
 
-        public async Task<int> DeleteCategoryAsync(Guid Id, CancellationToken ct)
+        public async Task DeleteCategoryAsync(Guid Id, CancellationToken ct)
         {
+            var spec = new CategorySpec(Id);
+            var exists = await _uof.GetRepository<Guid, Category>().IsExsists(spec);
+            if (!exists) throw new CateoryNotFoundException(Id);
+
             _uof.GetRepository<Guid, Category>().Delete(Id);
-            return await _uof.SaveChangesAsync(ct);
         }
     }
 }

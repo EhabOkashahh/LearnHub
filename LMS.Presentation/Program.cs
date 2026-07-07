@@ -10,6 +10,7 @@ using Scalar.AspNetCore;
 using Presistence.Data;
 using Services.Specifications;
 using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
+using LMS.Presentation.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -23,8 +24,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 builder.Services.AddOpenApi();
+
+
 var app = builder.Build();
 
+
+app.UseStaticFiles();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -36,5 +41,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
 app.Run();

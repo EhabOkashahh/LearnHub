@@ -1,3 +1,5 @@
 {
-    "dotnet.defaultSolution": "LMS.sln"
+    "dotnet.defaultSolution": "LMS.sln",
+    "github.copilot.enable": false,
+    "editor.inlineSuggest.enabled": false
 }

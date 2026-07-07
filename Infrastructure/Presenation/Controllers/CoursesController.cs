@@ -24,40 +24,28 @@ namespace Presenation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourseById(Guid? id, CancellationToken ct)
         {
-            if(id == null) return BadRequest();
-
-            var course = await serviceManager.CourseService.GetCourseByIdAsync(id.Value , ct);
-            if(course == null) return NotFound();
-
+            var course = await serviceManager.CourseService.GetCourseByIdAsync(id!.Value , ct);
             return Ok(course);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCourse([FromBody]CreateCourseRequest request, CancellationToken ct)
         {
-            if(request == null) return BadRequest();
-
-            var rowsAffected = await serviceManager.CourseService.CreateCourseAsync(request, ct);
-            if(rowsAffected == 0) return BadRequest("Category does not exist");
-
+             await serviceManager.CourseService.CreateCourseAsync(request, ct);
             return Ok();
         }
 
         [HttpPut("{id}")]   
         public async Task<IActionResult> UpdateCourse(Guid id, [FromBody]UpdateCourseRequest request, CancellationToken ct)
         {
-            var rowsAffected = await serviceManager.CourseService.UpdateCourseAsync(id, request, ct);
-            if(rowsAffected == 0) return NotFound();    
-
+            await serviceManager.CourseService.UpdateCourseAsync(id, request, ct);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(Guid id, CancellationToken ct)
         {
-            var rowsAffected = await serviceManager.CourseService.DeleteCourseAsync(id, ct);
-            if(rowsAffected == 0) return NotFound();
-
+            await serviceManager.CourseService.DeleteCourseAsync(id, ct);
             return NoContent();
         }
     }

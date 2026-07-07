@@ -7,15 +7,16 @@ namespace Presistence.Repository
 {
     public class GenericRepository<Tkey, TEntity>(AppDbContext _context) : IGenericRepository<Tkey, TEntity> where TEntity : BaseEntity<Tkey>
     {
+        private IQueryable<TEntity> InputQuery { get; set; } = _context.Set<TEntity>();
         public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<Tkey,TEntity> spec, CancellationToken ct ,bool ChangeTrackr = false)
         {
-           return ChangeTrackr ? await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).ToListAsync(ct) :
-                                  await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).AsNoTracking().ToListAsync(ct);
+           return ChangeTrackr ? await SpecificationsEvaluator.GetQuery(InputQuery, spec).ToListAsync(ct) :
+                                  await SpecificationsEvaluator.GetQuery(InputQuery, spec).AsNoTracking().ToListAsync(ct);
         }
 
         public async Task<TEntity?> GetAsync(ISpecifications<Tkey,TEntity> spec, Tkey key, CancellationToken ct)
         {
-            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).AsNoTracking().FirstOrDefaultAsync(ct);
+            return await SpecificationsEvaluator.GetQuery(InputQuery, spec).FirstOrDefaultAsync(ct);
         }
 
         public async Task AddAsync(TEntity entity)
@@ -23,14 +24,13 @@ namespace Presistence.Repository
            await _context.AddAsync(entity);
         }
 
+        public async Task<int> GetCountAsync(ISpecifications<Tkey, TEntity> spec)
+        {
+            return await SpecificationsEvaluator.GetQuery(InputQuery, spec).CountAsync();
+        }
         public void Update(TEntity entity)
         {
             _context.Update(entity);
-        }
-
-        public async Task<int> GetCountAsync(ISpecifications<Tkey, TEntity> spec)
-        {
-            return await SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec).CountAsync();
         }
 
         public void Delete(Tkey key)
@@ -40,10 +40,12 @@ namespace Presistence.Repository
             {
                 entity.IsDeleted = true;
                 entity.DeletedAt = DateTime.UtcNow;
-                _context.Update(entity);
             }
         }
 
-        
+        public async Task<bool> IsExsists(ISpecifications<Tkey, TEntity> spec)
+        {
+            return await SpecificationsEvaluator.GetQuery(InputQuery, spec).AnyAsync();    
+        }
     }
 }

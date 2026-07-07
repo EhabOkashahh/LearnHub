@@ -17,42 +17,30 @@ namespace Presenation.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById(Guid? id, CancellationToken ct)
+        public async Task<IActionResult> GetCategoryById(Guid id, CancellationToken ct)
         {
-            if (id == null) return BadRequest();
-
-            var category = await serviceManager.CategoryService.GetCategoryByIdAsync(id.Value, ct);
-            if (category == null) return NotFound();
-
+            var category = await serviceManager.CategoryService.GetCategoryByIdAsync(id, ct);
             return Ok(category);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest request, CancellationToken ct)
         {
-            if (request == null) return BadRequest();
-
-            var rowsAffected = await serviceManager.CategoryService.CreateCategoryAsync(request, ct);
-            if (rowsAffected == 0) return BadRequest("Failed to create category");
-
+            await serviceManager.CategoryService.CreateCategoryAsync(request, ct);
             return Ok();
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryRequest request, CancellationToken ct)
         {
-            var rowsAffected = await serviceManager.CategoryService.UpdateCategoryAsync(id, request, ct);
-            if (rowsAffected == 0) return NotFound();
-
+            await serviceManager.CategoryService.UpdateCategoryAsync(id, request, ct);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken ct)
         {
-            var rowsAffected = await serviceManager.CategoryService.DeleteCategoryAsync(id, ct);
-            if (rowsAffected == 0) return NotFound();
-
+            await serviceManager.CategoryService.DeleteCategoryAsync(id, ct);
             return NoContent();
         }
     }

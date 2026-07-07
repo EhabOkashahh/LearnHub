@@ -8,8 +8,8 @@ namespace ServicesAbstraction.Courses
     {
         Task<PaginatedResponse<CourseResponse>> GetAllCoursesAsync(CourseQueryParams queryParams,CancellationToken cancellationToken);
         Task<CourseResponse?> GetCourseByIdAsync(Guid Id, CancellationToken cancellationToken);
-        Task<int> CreateCourseAsync(CreateCourseRequest request, CancellationToken cancellationToken);
-        Task<int> UpdateCourseAsync(Guid Id, UpdateCourseRequest request, CancellationToken cancellationToken);
-        Task<int> DeleteCourseAsync(Guid Id, CancellationToken cancellationToken);
+        Task CreateCourseAsync(CreateCourseRequest request, CancellationToken cancellationToken);
+        Task UpdateCourseAsync(Guid Id, UpdateCourseRequest request, CancellationToken cancellationToken);
+        Task DeleteCourseAsync(Guid Id, CancellationToken cancellationToken);
     }
 }
