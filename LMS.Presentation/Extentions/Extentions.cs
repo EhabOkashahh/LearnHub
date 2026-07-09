@@ -9,10 +9,10 @@ namespace LMS.Presentation.Extentions
 {
     public static class Extentions
     {
-        public static IServiceCollection RegisterAllServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterAllServices(this IServiceCollection services)
         {
             services.AddWebServices();
-            services.AddInfrastructureServices(configuration);
+            services.AddInfrastructureServices();
             services.ApplyApplicationServices();
             services.ModifyApiBehaviourOptions();
 

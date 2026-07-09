@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Azure.Core;
+using Domain.Exceptions.BadRequestExceptions;
 using Domain.Exceptions.NotFoundExceptions;
 using Shared.ErrorModels;
 
@@ -31,6 +27,7 @@ namespace LMS.Presentation.Middlewares
                 context.Response.StatusCode = ex switch 
                 {
                     NotFoundException => StatusCodes.Status404NotFound,
+                    BadRequestException => StatusCodes.Status400BadRequest,
                     _ => StatusCodes.Status500InternalServerError
                 };
 

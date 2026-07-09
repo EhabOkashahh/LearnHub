@@ -2,7 +2,7 @@ using LMS.Presentation.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.RegisterAllServices(builder.Configuration);
+builder.Services.RegisterAllServices();
 
 var app = builder.Build();
 

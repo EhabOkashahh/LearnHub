@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ServicesAbstraction.Cart;
 using ServicesAbstraction.Categories;
 using ServicesAbstraction.Courses;
 
@@ -11,5 +12,6 @@ namespace ServicesAbstraction
     {
         public ICoursesService CourseService { get; }
         public ICategoriesService CategoryService { get; }
+        public ICartServices CartServices { get; }
     }
 }
