@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presenation.CustomAttributes;
 using ServicesAbstraction;
 using Shared.DTOS;
 using Shared.DTOS.Categories;
@@ -14,6 +15,7 @@ namespace Presenation.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CategoryResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
+        [Cache(300)]
         public async Task<IActionResult> GetAllCategories(CancellationToken ct)
         {
             var categories = await serviceManager.CategoryService.GetAllCategoriesAsync(ct);

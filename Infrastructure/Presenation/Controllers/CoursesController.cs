@@ -1,6 +1,7 @@
 using Domain.Exceptions.NotFoundExceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presenation.CustomAttributes;
 using ServicesAbstraction;
 using Shared.DTOS.Courses;
 using Shared.ErrorModels;
@@ -15,6 +16,7 @@ namespace Presenation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<CourseResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]
+        [Cache(300)]
         public async Task<ActionResult<PaginatedResponse<CourseResponse>>> GetAllCourses([FromQuery]CourseQueryParams queryParams, CancellationToken ct)
         {
             var courses = await serviceManager.CourseService.GetAllCoursesAsync(queryParams,ct);
