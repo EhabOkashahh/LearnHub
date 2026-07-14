@@ -6,6 +6,7 @@ builder.Services.RegisterAllServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.ConfigureWebApplicationMiddlewares();
+await app.ConfigureWebApplicationMiddlewaresAsync();
+
 
 app.Run();

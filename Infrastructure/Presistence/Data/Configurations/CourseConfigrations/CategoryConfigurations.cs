@@ -19,10 +19,6 @@ namespace Presistence.Data.Configurations.CourseConfigrations
                 .IsRequired();
 
             builder.HasQueryFilter(x => !x.IsDeleted);
-
-            builder.HasMany(x => x.Courses)
-                .WithOne(x => x.Category)
-                .HasForeignKey(x => x.CategoryId);
         }
     }
 }

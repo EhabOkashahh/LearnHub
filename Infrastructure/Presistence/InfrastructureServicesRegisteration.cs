@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Presistence.Data;
 using Presistence.Data.Contexts;
+using Presistence.Data.Seeding;
 using Presistence.Repository;
 using Services;
 using ServicesAbstraction;
@@ -29,7 +31,8 @@ namespace Presistence
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICartRepository,CartRepository>();
             services.AddScoped<ICacheService,CacheService>();
-
+            services.AddScoped<IDbInitializer,DbInitializer>();
+            
             services.AddSingleton<IConnectionMultiplexer>((sp) => {
                 var config = sp.GetRequiredService<IConfiguration>();
                 return ConnectionMultiplexer.Connect(config.GetConnectionString("RedisConnnection")!);

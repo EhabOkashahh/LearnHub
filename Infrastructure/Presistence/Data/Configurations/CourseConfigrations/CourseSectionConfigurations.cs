@@ -26,11 +26,6 @@ namespace Presistence.Data.Configurations.CourseConfigrations
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasQueryFilter(x => !x.IsDeleted);
-
-        builder.HasMany(x => x.Lessons)
-            .WithOne(x => x.Section)
-            .HasForeignKey(x => x.SectionId)
-            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

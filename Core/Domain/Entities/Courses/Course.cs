@@ -1,5 +1,5 @@
-using Domain.Entities.Courses;
 using Domain.Entities.Courses.Enums;
+using Domain.Entities.Identity;
 
 namespace Domain.Entities.Courses
 {
@@ -14,7 +14,14 @@ namespace Domain.Entities.Courses
         public decimal Price { get; set; }
         public Guid CategoryId { get; set; }
 
-        public Category Category { get; set; } = null!;      
+
+
+
+        public ICollection<Enrollment> Enrollments { get; set; } = null!;
+        public Category Category { get; set; } = null!;
+
+        public string InstructorProfileId { get; set; } = null!;      
+        public InstructorProfile InstructorProfile { get; set; } = null!;      
 
         private List<CourseSection> _courseSections = [];
         public IReadOnlyCollection<CourseSection> CourseSections => _courseSections.AsReadOnly();

@@ -44,11 +44,6 @@ namespace Presistence.Data.Configurations.CourseConfigrations
                 .HasForeignKey(x => x.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.CourseSections)
-                .WithOne(x => x.Course)
-                .HasForeignKey(x => x.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.Navigation(x => x.CourseSections)
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
         }

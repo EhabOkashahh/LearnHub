@@ -4,6 +4,11 @@ using Shared.ErrorModels;
 using Services;
 using Scalar.AspNetCore;
 using LMS.Presentation.Middlewares;
+using Domain.Contracts;
+using Domain.Entities.Identity;
+using System.Net;
+using Microsoft.AspNetCore.Identity;
+using Presistence.Data.Contexts;
 
 namespace LMS.Presentation.Extentions
 {
@@ -15,30 +20,32 @@ namespace LMS.Presentation.Extentions
             services.AddInfrastructureServices(configuration);
             services.ApplyApplicationServices();
             services.ModifyApiBehaviourOptions();
+            services.AddIdentityConfigurations();
 
             return services;
         }
 
-        public static WebApplication ConfigureWebApplicationMiddlewares(this WebApplication app)
+        public static async Task<WebApplication> ConfigureWebApplicationMiddlewaresAsync(this WebApplication app)
         {
 
             app.UseStaticFiles();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-            app.MapOpenApi();
-            app.MapScalarApiReference();
-            app.MapGet("/", () => Results.Redirect("/scalar/v1"));
-
+                app.MapOpenApi();
+                app.MapScalarApiReference();
+                app.MapGet("/", () => Results.Redirect("/scalar/v1"));
             }
 
+            using var scope = app.Services.CreateScope();
+            var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            await DbInitializer.IdentityInitializeAsync();
+            
             app.UseHttpsRedirection();
             app.MapControllers();
             app.UseMiddleware<GlobalErrorHandlingMiddleware>();
             return app;
         }
-
-
 
 
 
@@ -48,11 +55,17 @@ namespace LMS.Presentation.Extentions
             services.AddOpenApi();
             services.AddEndpointsApiExplorer();
         }
-
+        private static void AddIdentityConfigurations(this IServiceCollection services)
+        {
+            services.AddIdentityCore<AppUser>(opt =>
+            {
+               opt.User.RequireUniqueEmail = true;
+               opt.Password.RequiredLength = 8;
+            }).AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+        }
         private static void ModifyApiBehaviourOptions(this IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(cf =>
-
                             cf.InvalidModelStateResponseFactory = (actionContext) =>
                             {
                                 var Errors = actionContext.ModelState.Where(ms => ms.Value!.Errors.Any())

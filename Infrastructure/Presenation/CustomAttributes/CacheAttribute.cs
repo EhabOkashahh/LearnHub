@@ -12,7 +12,13 @@ namespace Presenation.CustomAttributes
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
+            bool flowControl = await ExecuteCache(context, next);
+            if (!flowControl) return;   
+        }
+
+        private async Task<bool> ExecuteCache(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            var cacheService = context.HttpContext.RequestServices.GetRequiredService<IServiceManager>().CacheService;
             var key = BuildCachingKey(context.HttpContext);
 
             var cached = await cacheService.GetAsync(key);
@@ -24,16 +30,18 @@ namespace Presenation.CustomAttributes
                     ContentType = "application/json",
                     StatusCode = 200
                 };
-                return;
+                return false;
             }
 
             var ActionContext = await next.Invoke();
-            if(ActionContext.Result is OkObjectResult ok)
+            if (ActionContext.Result is OkObjectResult ok)
             {
-                var json = JsonSerializer.Serialize(ok.Value, ok.Value.GetType());
+                var json = JsonSerializer.Serialize(ok.Value, ok.Value!.GetType());
                 await cacheService.SetAsync(key, json, TimeSpan.FromSeconds(duration));
 
             }
+
+            return true;
         }
 
         private static string BuildCachingKey(HttpContext httpContext)

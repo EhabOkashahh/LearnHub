@@ -11,6 +11,7 @@ namespace Services
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddAutoMapper(cfg => cfg.AddMaps(typeof(CoursesProfile).Assembly));
 
+            
             return services;
         }
     }
