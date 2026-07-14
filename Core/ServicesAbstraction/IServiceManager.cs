@@ -14,5 +14,6 @@ namespace ServicesAbstraction
         public ICategoriesService CategoryService { get; }
         public ICartServices CartServices { get; }
         public ICacheService CacheService { get;}
+        public IAuthService AuthService { get;}
     }
 }

@@ -1,4 +1,5 @@
 using Domain.Exceptions.NotFoundExceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presenation.CustomAttributes;
@@ -17,6 +18,7 @@ namespace Presenation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]
         [Cache(300)]
+        [Authorize]
         public async Task<ActionResult<PaginatedResponse<CourseResponse>>> GetAllCourses([FromQuery]CourseQueryParams queryParams, CancellationToken ct)
         {
             var courses = await serviceManager.CourseService.GetAllCoursesAsync(queryParams,ct);
@@ -39,6 +41,7 @@ namespace Presenation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
+        
         public async Task<IActionResult> CreateCourse([FromBody]CreateCourseRequest request, CancellationToken ct)
         {
              await serviceManager.CourseService.CreateCourseAsync(request, ct);

@@ -6,9 +6,10 @@ using Scalar.AspNetCore;
 using LMS.Presentation.Middlewares;
 using Domain.Contracts;
 using Domain.Entities.Identity;
-using System.Net;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Presistence.Data.Contexts;
+using System.Text;
 
 namespace LMS.Presentation.Extentions
 {
@@ -21,6 +22,7 @@ namespace LMS.Presentation.Extentions
             services.ApplyApplicationServices();
             services.ModifyApiBehaviourOptions();
             services.AddIdentityConfigurations();
+            services.AddAuthnticateOptions();
 
             return services;
         }
@@ -28,6 +30,12 @@ namespace LMS.Presentation.Extentions
         public static async Task<WebApplication> ConfigureWebApplicationMiddlewaresAsync(this WebApplication app)
         {
 
+            using var scope = app.Services.CreateScope();
+            var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            await DbInitializer.IdentityInitializeAsync();
+
+
+            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
             app.UseStaticFiles();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -37,13 +45,10 @@ namespace LMS.Presentation.Extentions
                 app.MapGet("/", () => Results.Redirect("/scalar/v1"));
             }
 
-            using var scope = app.Services.CreateScope();
-            var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await DbInitializer.IdentityInitializeAsync();
-            
             app.UseHttpsRedirection();
+            app.UseAuthentication();  
+            app.UseAuthorization();  
             app.MapControllers();
-            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
             return app;
         }
 
@@ -82,6 +87,29 @@ namespace LMS.Presentation.Extentions
                                 return new BadRequestObjectResult(response);
                             }
                         );
+        }
+        private static void AddAuthnticateOptions(this IServiceCollection services)
+        {
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = "Bearer";
+                opt.DefaultChallengeScheme= "Bearer";
+            }).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = Environment.GetEnvironmentVariable("API_BASE_URL"),
+
+                    ValidateAudience = true,
+                    ValidAudience = Environment.GetEnvironmentVariable("JwtAudiance"),
+
+                    ValidateLifetime = true,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("TokenKey")!))
+                };
+            });
         }
     }
 }

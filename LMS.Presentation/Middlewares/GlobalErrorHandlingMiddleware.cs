@@ -1,5 +1,6 @@
 using Domain.Exceptions.BadRequestExceptions;
 using Domain.Exceptions.NotFoundExceptions;
+using Domain.Exceptions.UnAuthorizeException;
 using Shared.ErrorModels;
 
 namespace LMS.Presentation.Middlewares
@@ -28,6 +29,7 @@ namespace LMS.Presentation.Middlewares
                 {
                     NotFoundException => StatusCodes.Status404NotFound,
                     BadRequestException => StatusCodes.Status400BadRequest,
+                    UnAuthorizedException => StatusCodes.Status401Unauthorized,
                     _ => StatusCodes.Status500InternalServerError
                 };
 
