@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Presistence;
 using Shared.ErrorModels;
 using Services;
@@ -9,6 +10,7 @@ using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Presistence.Data.Contexts;
+using ServicesAbstraction.Auth;
 using System.Text;
 
 namespace LMS.Presentation.Extentions
@@ -17,12 +19,14 @@ namespace LMS.Presentation.Extentions
     {
         public static IServiceCollection RegisterAllServices(this IServiceCollection services, IConfiguration configuration)
         {
+            
+            var jwtOptions = services.ConfigureAllJwtOptions();
             services.AddWebServices();
             services.AddInfrastructureServices(configuration);
             services.ApplyApplicationServices();
             services.ModifyApiBehaviourOptions();
             services.AddIdentityConfigurations();
-            services.AddAuthnticateOptions();
+            services.AddAuthnticateOptions(jwtOptions);
 
             return services;
         }
@@ -88,7 +92,7 @@ namespace LMS.Presentation.Extentions
                             }
                         );
         }
-        private static void AddAuthnticateOptions(this IServiceCollection services)
+        private static void AddAuthnticateOptions(this IServiceCollection services, JwtOptions jwtOptions)
         {
             services.AddAuthentication(opt =>
             {
@@ -99,17 +103,32 @@ namespace LMS.Presentation.Extentions
                 opt.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = Environment.GetEnvironmentVariable("API_BASE_URL"),
+                    ValidIssuer = jwtOptions.Issuer,
 
                     ValidateAudience = true,
-                    ValidAudience = Environment.GetEnvironmentVariable("JwtAudiance"),
+                    ValidAudience = jwtOptions.Audience,
 
                     ValidateLifetime = true,
 
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("TokenKey")!))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.TokenKey))
                 };
             });
+        }
+
+        private static JwtOptions ConfigureAllJwtOptions(this IServiceCollection services)
+        {
+            var jwtOptions = new JwtOptions
+            {
+                TokenKey = Environment.GetEnvironmentVariable("TokenKey")!,
+                Issuer = Environment.GetEnvironmentVariable("API_BASE_URL")!,
+                Audience = Environment.GetEnvironmentVariable("JwtAudiance")!,
+                DurationInDays = double.Parse(Environment.GetEnvironmentVariable("JwtDuration")!)
+            };
+
+            services.AddSingleton<IOptions<JwtOptions>>(new OptionsWrapper<JwtOptions>(jwtOptions));
+
+            return jwtOptions;
         }
     }
 }

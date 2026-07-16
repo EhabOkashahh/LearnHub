@@ -9,7 +9,9 @@ using Domain.Exceptions.BadRequestExceptions;
 using Domain.Exceptions.NotFoundExceptions;
 using Domain.Exceptions.UnAuthorizeException;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using ServicesAbstraction;
+using ServicesAbstraction.Auth;
 using Shared.DTOS.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -17,7 +19,7 @@ using System.Security.Claims;
 
 namespace Services
 {
-    public class AuthService(UserManager<AppUser> _userManger, IMapper _mapper) : IAuthService
+    public class AuthService(UserManager<AppUser> _userManger, IMapper _mapper, IOptions<JwtOptions> _jwtOptions) : IAuthService
     {
         public async Task<UserAuthResponse> LoginAsync(LoginRequest request)
         {
@@ -52,8 +54,7 @@ namespace Services
     
         private async Task<string> GenerateTokenAsync(AppUser user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("TokenKey")!));
-
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Value.TokenKey));
 
             var claims = new List<Claim>()
             {
@@ -64,16 +65,13 @@ namespace Services
 
             var roles = await _userManger.GetRolesAsync(user);
 
-
             foreach(var role in roles) claims.Add(new Claim(ClaimTypes.Role,role));
-            
-
 
             var token = new JwtSecurityToken(
-                issuer : Environment.GetEnvironmentVariable("API_BASE_URL"),
-                audience: Environment.GetEnvironmentVariable("JwtAudiance"),
+                issuer : _jwtOptions.Value.Issuer,
+                audience: _jwtOptions.Value.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddDays(double.Parse(Environment.GetEnvironmentVariable("JwtDuration")!)),
+                expires: DateTime.Now.AddDays(_jwtOptions.Value.DurationInDays),
                 signingCredentials: new SigningCredentials(key,SecurityAlgorithms.HmacSha256)
             );
 
