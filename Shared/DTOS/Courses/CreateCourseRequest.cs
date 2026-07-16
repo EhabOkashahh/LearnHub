@@ -13,5 +13,6 @@ namespace Shared.DTOS.Courses
         public decimal Price { get; set; }
         public string Level { get; set; } = null!;
         public Guid CategoryId { get; set; }
+        public string InstructorId { get; set; } = null!;
     }
 }

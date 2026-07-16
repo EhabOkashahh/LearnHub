@@ -14,7 +14,7 @@ namespace Presistence.Data.Seeding
     {
         public async Task IdentityInitializeAsync()
         {
-            if (_context.Database.GetPendingMigrationsAsync().GetAwaiter().GetResult().Any())
+            if ((await _context.Database.GetPendingMigrationsAsync()).Any())
             {
                 await _context.Database.MigrateAsync();
             }

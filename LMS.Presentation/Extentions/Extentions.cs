@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using Presistence.Data.Contexts;
 using ServicesAbstraction.Auth;
 using System.Text;
+using Microsoft.OpenApi;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMS.Presentation.Extentions
 {
@@ -27,6 +29,10 @@ namespace LMS.Presentation.Extentions
             services.ModifyApiBehaviourOptions();
             services.AddIdentityConfigurations();
             services.AddAuthnticateOptions(jwtOptions);
+            services.AddOpenApiOpetions();
+
+           
+
 
             return services;
         }
@@ -45,7 +51,10 @@ namespace LMS.Presentation.Extentions
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
-                app.MapScalarApiReference();
+                app.MapScalarApiReference( opt =>
+                {
+                    opt.AddPreferredSecuritySchemes("Bearer");
+                });
                 app.MapGet("/", () => Results.Redirect("/scalar/v1"));
             }
 
@@ -115,7 +124,42 @@ namespace LMS.Presentation.Extentions
                 };
             });
         }
+        private static void AddOpenApiOpetions(this IServiceCollection services)
+        {
+            services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer((document, context, cancellationToken) =>
+                {
+                    document.Components ??= new OpenApiComponents();
+                    document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>(); 
+                    document.Components.SecuritySchemes!.Add("Bearer", new OpenApiSecurityScheme
+                    {
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT"
+                    });
+                    return Task.CompletedTask;
+                });
 
+                options.AddOperationTransformer((operation ,context, CancellationToken) =>
+                {
+                    var hasAuthorize = context.Description.ActionDescriptor.EndpointMetadata
+                                    .OfType<AuthorizeAttribute>()
+                                    .Any();
+                    
+                    if(!hasAuthorize) return Task.CompletedTask;
+
+                    operation.Security ??= new List<OpenApiSecurityRequirement>();
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                        {
+                            [new OpenApiSecuritySchemeReference("Bearer")] = []
+                        });
+
+                    return Task.CompletedTask;   
+                });
+            });
+        }
         private static JwtOptions ConfigureAllJwtOptions(this IServiceCollection services)
         {
             var jwtOptions = new JwtOptions
@@ -130,5 +174,7 @@ namespace LMS.Presentation.Extentions
 
             return jwtOptions;
         }
+    
+    
     }
 }
