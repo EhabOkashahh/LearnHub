@@ -1,20 +1,22 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Domain.Entities.Courses.Enums;
 using ServicesAbstraction.Courses;
-using Shared.DTOS;
 using Shared.DTOS.Courses;
-using Microsoft.EntityFrameworkCore;
 using Domain.Entities.Courses;
 using Domain.Contracts;
 using Services.Specifications.CoursesSpecifications;
-using System.Globalization;
 using Domain.Exceptions.NotFoundExceptions;
 using Services.Specifications.CategorySpecifications;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Domain.Exceptions.BadRequestExceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services
 {
-    public class CourseService(IUnitOfWork _uof, IMapper _mapper) : ICoursesService
+    public class CourseService(IUnitOfWork _uof, IMapper _mapper, UserManager<AppUser> _userManager) : ICoursesService
     {
         public async Task<PaginatedResponse<CourseResponse>> GetAllCoursesAsync(CourseQueryParams queryParams,CancellationToken ct)
         {
@@ -40,11 +42,12 @@ namespace Services
             return _mapper.Map<CourseResponse>(course);
         }
 
-        public async Task CreateCourseAsync(CreateCourseRequest request, CancellationToken ct)
+        public async Task CreateCourseAsync(CreateCourseRequest request,CancellationToken ct)
         {
             var CatSpec = new CategorySpec(request.CategoryId);
             var categoryExists = await _uof.GetRepository<Guid,Category>().IsExsists(CatSpec);
             if (!categoryExists) throw new CateoryNotFoundException(request.CategoryId);
+
 
             var course = _mapper.Map<Course>(request);
             await _uof.GetRepository<Guid,Course>().AddAsync(course);

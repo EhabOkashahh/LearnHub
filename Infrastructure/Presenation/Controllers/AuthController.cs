@@ -14,9 +14,9 @@ namespace Presenation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserAuthResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
         {
-            var result = await serviceManager.AuthService.RegisterAsync(request);
+            var result = await serviceManager.AuthService.RegisterAsync(request, ct);
             return Ok(result);
         }
 

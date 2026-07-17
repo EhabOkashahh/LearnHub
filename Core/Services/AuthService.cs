@@ -16,10 +16,12 @@ using Shared.DTOS.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes;
+using Domain.Contracts;
 
 namespace Services
 {
-    public class AuthService(UserManager<AppUser> _userManger, IMapper _mapper, IOptions<JwtOptions> _jwtOptions) : IAuthService
+    public class AuthService(UserManager<AppUser> _userManger, IMapper _mapper, IOptions<JwtOptions> _jwtOptions, IUnitOfWork _uof) : IAuthService
     {
         public async Task<UserAuthResponse> LoginAsync(LoginRequest request)
         {
@@ -36,7 +38,7 @@ namespace Services
             };
         }
 
-        public async Task<UserAuthResponse> RegisterAsync(RegisterRequest request)
+        public async Task<UserAuthResponse> RegisterAsync(RegisterRequest request,CancellationToken ct)
         {
             var user = _mapper.Map<AppUser>(request);
 
@@ -44,6 +46,10 @@ namespace Services
 
             if(!res.Succeeded) throw new BadRequestException(string.Join(",",res.Errors.Select(E => E.Description)));
 
+            user.StudentProfile = new StudentProfile(){Id = user.Id};
+                       
+            await _uof.SaveChangesAsync(ct);
+ 
             return new UserAuthResponse()
             {
               DisplayName = request.DisplayName,
@@ -58,6 +64,7 @@ namespace Services
 
             var claims = new List<Claim>()
             {
+                new Claim(ClaimTypes.NameIdentifier,user.Id),
                 new Claim(ClaimTypes.GivenName,user.DisplayName),
                 new Claim(ClaimTypes.Email,user.Email!),
                 new Claim(ClaimTypes.MobilePhone,user.PhoneNumber!)

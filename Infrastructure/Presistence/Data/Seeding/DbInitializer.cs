@@ -23,12 +23,15 @@ namespace Presistence.Data.Seeding
             {
                 await _roleManager.CreateAsync(new IdentityRole
                 {
-                   Name = "SuperAdmin",
-                    
+                   Name = "SuperAdmin",   
                 });
                 await _roleManager.CreateAsync(new IdentityRole
                 {
                    Name = "Admin",
+                });
+                await _roleManager.CreateAsync(new IdentityRole
+                {
+                   Name = "Instructor",
                 });
             }
 
