@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Entities.Identity;
 using Domain.Exceptions.BadRequestExceptions;
@@ -10,13 +6,11 @@ using Domain.Exceptions.NotFoundExceptions;
 using Domain.Exceptions.UnAuthorizeException;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using ServicesAbstraction;
 using ServicesAbstraction.Auth;
 using Shared.DTOS.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes;
 using Domain.Contracts;
 
 namespace Services
@@ -58,7 +52,7 @@ namespace Services
             };
         }
     
-        private async Task<string> GenerateTokenAsync(AppUser user)
+        public async Task<string> GenerateTokenAsync(AppUser user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Value.TokenKey));
 

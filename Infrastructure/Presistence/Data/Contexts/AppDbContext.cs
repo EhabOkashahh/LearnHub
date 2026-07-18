@@ -16,6 +16,7 @@ namespace Presistence.Data.Contexts
         public DbSet<StudentProfile> StudentProfiles { get; set; }
         public DbSet<InstructorProfile> InstructorProfiles { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<InstructorRequest> InstructorRequests { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

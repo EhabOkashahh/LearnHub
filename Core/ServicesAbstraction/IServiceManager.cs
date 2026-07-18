@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ServicesAbstraction.Auth;
 using ServicesAbstraction.Cart;
 using ServicesAbstraction.Categories;
 using ServicesAbstraction.Courses;
+using ServicesAbstraction.Users;
 
 namespace ServicesAbstraction
 {
@@ -15,5 +13,6 @@ namespace ServicesAbstraction
         public ICartServices CartServices { get; }
         public ICacheService CacheService { get;}
         public IAuthService AuthService { get;}
+        public IUsersService UserService { get;}
     }
 }

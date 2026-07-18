@@ -13,6 +13,7 @@ using ServicesAbstraction.Auth;
 using ServicesAbstraction.Cart;
 using ServicesAbstraction.Categories;
 using ServicesAbstraction.Courses;
+using ServicesAbstraction.Users;
 
 namespace Services
 {
@@ -22,12 +23,14 @@ namespace Services
          ICartRepository cartRepository,
          IDistributedCache distributedCache,
          UserManager<AppUser> _userManager,
-         IOptions<JwtOptions> _jwtOptions) : IServiceManager
+         IOptions<JwtOptions> _jwtOptions,
+         RoleManager<IdentityRole> _roleManager) : IServiceManager
     {
         public ICoursesService CourseService { get; } = new CourseService(_uof, mapper,_userManager);
         public ICategoriesService CategoryService { get; } = new CategoryService(_uof, mapper);
         public ICartServices CartServices { get; } = new CartServices(cartRepository, mapper);
         public ICacheService CacheService { get; } = new CacheService(distributedCache);
         public IAuthService AuthService { get; } = new AuthService(_userManager, mapper, _jwtOptions, _uof);
+        public IUsersService UserService { get; } = new UserService(_userManager, mapper, _uof, _roleManager);
     }
 }
