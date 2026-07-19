@@ -20,8 +20,8 @@ namespace Domain.Entities.Courses
         public ICollection<Enrollment> Enrollments { get; set; } = null!;
         public Category Category { get; set; } = null!;
 
-        public string InstructorProfileId { get; set; } = null!;      
-        public InstructorProfile InstructorProfile { get; set; } = null!;      
+        public string InstructorId { get; set; } = null!;      
+        public AppUser Instructor { get; set; } = null!;      
 
         private List<CourseSection> _courseSections = [];
         public IReadOnlyCollection<CourseSection> CourseSections => _courseSections.AsReadOnly();

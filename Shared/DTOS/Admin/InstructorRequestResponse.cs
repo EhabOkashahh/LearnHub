@@ -12,7 +12,7 @@ namespace Shared.DTOS.Admin
         public string UserDisplayName { get; set; } = null!;
         public string UserEmail { get; set; } = null!;
         public string Status { get; set; } = null!;
-        public string RequestedAt { get; set; } = null!;
-        public string ReviewedAt { get; set; } = null!;
+        public DateTime RequestedAt { get; set; } 
+        public DateTime ReviewedAt { get; set; }
     }
 }

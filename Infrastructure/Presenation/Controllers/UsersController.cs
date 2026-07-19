@@ -48,13 +48,13 @@ namespace Presenation.Controllers
             return NoContent();
         }
 
-        [HttpPost("me/become-instructor")]
+        [HttpPost("me/request-instructor")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> BecomeInstructor(CancellationToken ct)
+        public async Task<IActionResult> RequestInstructorAsync(CancellationToken ct)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             await serviceManager.UserService.RequestInstructorAsync(userId, ct);

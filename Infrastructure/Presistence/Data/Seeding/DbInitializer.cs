@@ -33,6 +33,10 @@ namespace Presistence.Data.Seeding
                 {
                    Name = "Instructor",
                 });
+                await _roleManager.CreateAsync(new IdentityRole
+                {
+                   Name = "Student",
+                });
             }
 
             if (!_context.Users.Any())

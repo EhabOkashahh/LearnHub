@@ -11,11 +11,10 @@ using Shared.DTOS.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
-using Domain.Contracts;
 
 namespace Services
 {
-    public class AuthService(UserManager<AppUser> _userManger, IMapper _mapper, IOptions<JwtOptions> _jwtOptions, IUnitOfWork _uof) : IAuthService
+    public class AuthService(UserManager<AppUser> _userManger, IMapper _mapper, IOptions<JwtOptions> _jwtOptions) : IAuthService
     {
         public async Task<UserAuthResponse> LoginAsync(LoginRequest request)
         {
@@ -40,10 +39,8 @@ namespace Services
 
             if(!res.Succeeded) throw new BadRequestException(string.Join(",",res.Errors.Select(E => E.Description)));
 
-            user.StudentProfile = new StudentProfile(){Id = user.Id};
-                       
-            await _uof.SaveChangesAsync(ct);
- 
+            await _userManger.AddToRoleAsync(user, "Student");
+
             return new UserAuthResponse()
             {
               DisplayName = request.DisplayName,

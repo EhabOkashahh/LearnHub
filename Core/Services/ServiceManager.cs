@@ -23,14 +23,15 @@ namespace Services
          ICartRepository cartRepository,
          IDistributedCache distributedCache,
          UserManager<AppUser> _userManager,
-         IOptions<JwtOptions> _jwtOptions,
-         RoleManager<IdentityRole> _roleManager) : IServiceManager
+          IOptions<JwtOptions> _jwtOptions,
+          IAuthService _auth) : IServiceManager
     {
-        public ICoursesService CourseService { get; } = new CourseService(_uof, mapper,_userManager);
+        public ICoursesService CourseService { get; } = new CourseService(_uof, mapper);
         public ICategoriesService CategoryService { get; } = new CategoryService(_uof, mapper);
         public ICartServices CartServices { get; } = new CartServices(cartRepository, mapper);
         public ICacheService CacheService { get; } = new CacheService(distributedCache);
-        public IAuthService AuthService { get; } = new AuthService(_userManager, mapper, _jwtOptions, _uof);
-        public IUsersService UserService { get; } = new UserService(_userManager, mapper, _uof, _roleManager);
+        public IAuthService AuthService { get; } = new AuthService(_userManager, mapper, _jwtOptions);
+        public IUsersService UserService { get; } = new UserService(_userManager, mapper, _uof);
+        public IAdminService AdminService { get; } = new AdminServices(_uof, mapper, _auth,_userManager);
     }
 }

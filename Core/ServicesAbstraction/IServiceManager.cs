@@ -14,5 +14,6 @@ namespace ServicesAbstraction
         public ICacheService CacheService { get;}
         public IAuthService AuthService { get;}
         public IUsersService UserService { get;}
+        public IAdminService AdminService { get;}
     }
 }

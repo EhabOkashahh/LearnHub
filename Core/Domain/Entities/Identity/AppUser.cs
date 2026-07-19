@@ -12,7 +12,5 @@ namespace Domain.Entities.Identity
         public DateTime? LastLoginAt { get; set; }
 
 
-        public StudentProfile? StudentProfile { get; set; }
-        public InstructorProfile? InstructorProfile { get; set; }
     }
 }

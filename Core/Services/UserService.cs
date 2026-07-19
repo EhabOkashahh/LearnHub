@@ -35,20 +35,20 @@ namespace Services
 
         public async Task RequestInstructorAsync(string userId, CancellationToken ct)
         {
-            var spec = new InstructorSpecifications();
-            var UserRequest = (await _uof.GetRepository<Guid,InstructorRequest>().GetAllAsync(spec,ct)).FirstOrDefault(r => r.User.Id == userId);
+            var spec = new InstructorSpecifications(userId);
+            var UserRequest = (await _uof.GetRepository<Guid,InstructorRequest>().GetAllAsync(spec,ct)).FirstOrDefault();
 
             if(UserRequest is not null)
             {
                 if(UserRequest.Status is RequestStatus.Pending) throw new BadRequestException("You already have a pending Request");
-                else if(UserRequest.Status is RequestStatus.Rejected && (UserRequest.UpdatedAt - DateTime.Now) > TimeSpan.FromDays(30)) throw new BadRequestException("You must wait 30 days before re-applying for instructor role");
+
+                else if(UserRequest.Status is RequestStatus.Rejected && (DateTime.Now - UserRequest.UpdatedAt) < TimeSpan.FromDays(30)) 
+                    throw new BadRequestException("You must wait 30 days before re-applying for instructor role");
             }
 
             var request = new InstructorRequest()
             {
                 UserId = userId,
-                User = await _userManager.FindByIdAsync(userId),
-                Status = RequestStatus.Pending
             };
 
             await _uof.GetRepository<Guid,InstructorRequest>().AddAsync(request);

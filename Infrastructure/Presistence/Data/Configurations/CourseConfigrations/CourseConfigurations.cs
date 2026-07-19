@@ -46,6 +46,11 @@ namespace Presistence.Data.Configurations.CourseConfigrations
 
             builder.Navigation(x => x.CourseSections)
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            builder.HasOne(x => x.Instructor)
+                .WithMany()
+                .HasForeignKey(x => x.InstructorId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

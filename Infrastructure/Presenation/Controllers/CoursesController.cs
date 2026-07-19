@@ -45,7 +45,8 @@ namespace Presenation.Controllers
 
         public async Task<IActionResult> CreateCourse([FromBody]CreateCourseRequest request, CancellationToken ct)
         {
-            await serviceManager.CourseService.CreateCourseAsync(request, ct);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await serviceManager.CourseService.CreateCourseAsync(userId, request, ct);
             return Ok();
         }
 

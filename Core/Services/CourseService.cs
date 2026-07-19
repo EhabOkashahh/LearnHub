@@ -8,15 +8,13 @@ using Domain.Exceptions.NotFoundExceptions;
 using Services.Specifications.CategorySpecifications;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
-using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Domain.Exceptions.BadRequestExceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Services
 {
-    public class CourseService(IUnitOfWork _uof, IMapper _mapper, UserManager<AppUser> _userManager) : ICoursesService
+    public class CourseService(IUnitOfWork _uof, IMapper _mapper) : ICoursesService
     {
         public async Task<PaginatedResponse<CourseResponse>> GetAllCoursesAsync(CourseQueryParams queryParams,CancellationToken ct)
         {
@@ -42,7 +40,7 @@ namespace Services
             return _mapper.Map<CourseResponse>(course);
         }
 
-        public async Task CreateCourseAsync(CreateCourseRequest request,CancellationToken ct)
+        public async Task CreateCourseAsync(string instructorId, CreateCourseRequest request,CancellationToken ct)
         {
             var CatSpec = new CategorySpec(request.CategoryId);
             var categoryExists = await _uof.GetRepository<Guid,Category>().IsExsists(CatSpec);
@@ -50,6 +48,7 @@ namespace Services
 
 
             var course = _mapper.Map<Course>(request);
+            course.InstructorId = instructorId;
             await _uof.GetRepository<Guid,Course>().AddAsync(course);
             await _uof.SaveChangesAsync(ct);
         }

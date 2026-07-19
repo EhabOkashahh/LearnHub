@@ -8,7 +8,7 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
     {
         public void Configure(EntityTypeBuilder<Enrollment> builder)
         {
-            builder.HasKey(x => new { x.StudentProfileId, x.CourseId });
+            builder.HasKey(x => new { x.StudentId, x.CourseId });
 
             builder.Property(x => x.ProgressPercentage)
                 .HasDefaultValue(0.0);
@@ -16,9 +16,9 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
             builder.Property(x => x.EnrolledAt)
                 .IsRequired();
 
-            builder.HasOne(x => x.StudentProfile)
-                .WithMany(x => x.Enrollments)
-                .HasForeignKey(x => x.StudentProfileId)
+            builder.HasOne(x => x.Student)
+                .WithMany()
+                .HasForeignKey(x => x.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Course)

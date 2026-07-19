@@ -26,15 +26,7 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
 
-            builder.HasOne(x => x.StudentProfile)
-                .WithOne(x => x.AppUser)
-                .HasForeignKey<StudentProfile>(x => x.Id)
-                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(x => x.InstructorProfile)
-                .WithOne(x => x.AppUser)
-                .HasForeignKey<InstructorProfile>(x => x.Id)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
