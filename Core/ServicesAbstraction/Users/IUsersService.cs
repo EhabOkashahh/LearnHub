@@ -7,5 +7,6 @@ namespace ServicesAbstraction.Users
         Task<UserResponse> GetByIdAsync(string id, CancellationToken ct);
         Task UpdateProfileAsync(string userId, UpdateUserRequest request, CancellationToken ct);
         Task RequestInstructorAsync(string userId, CancellationToken ct);
+        Task<TokenResponse> RefreshTokenAsync(string userId, CancellationToken ct);
     }
 }

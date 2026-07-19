@@ -6,7 +6,15 @@ namespace Services.Specifications.CoursesSpecifications
 {
     public class CoursesSpec : Specifications<Guid,Course>
     {
-        public CoursesSpec(Guid id) : base(C => C.Id == id)
+        public CoursesSpec() : base(null)
+        {
+            ApplyIncludeExpression();
+        }
+        public CoursesSpec(Guid id) : base(C => C.Id == id )
+        {
+            
+        }
+        public CoursesSpec(Guid id,string userId) : base(C => C.Id == id && C.Instructor.Id == userId)
         {
             ApplyIncludeExpression();
         }
@@ -28,10 +36,6 @@ namespace Services.Specifications.CoursesSpecifications
         }
 
 
-        public CoursesSpec() : base(null)
-        {
-            ApplyIncludeExpression();
-        }
 
         private void ApplySorting(string? sort)
         {

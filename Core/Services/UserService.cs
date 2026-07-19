@@ -5,6 +5,7 @@ using Domain.Exceptions.NotFoundExceptions;
 using Microsoft.AspNetCore.Identity;
 using Domain.Entities.Courses.Enums;
 using Services.Specifications.UserSpecifications;
+using ServicesAbstraction.Auth;
 using ServicesAbstraction.Users;
 using Shared.DTOS.Users;
 using Domain.Exceptions.BadRequestExceptions;
@@ -14,7 +15,8 @@ namespace Services
     public class UserService(
         UserManager<AppUser> _userManager,
         IMapper _mapper,
-        IUnitOfWork _uof
+        IUnitOfWork _uof,
+        IAuthService _auth
     ) : IUsersService
     {
         public async Task<UserResponse> GetByIdAsync(string id, CancellationToken ct)
@@ -53,6 +55,15 @@ namespace Services
 
             await _uof.GetRepository<Guid,InstructorRequest>().AddAsync(request);
             await _uof.SaveChangesAsync(ct);
+        }
+
+        public async Task<TokenResponse> RefreshTokenAsync(string userId, CancellationToken ct)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) throw new UserNotFoundException(userId);
+
+            var token = await _auth.GenerateTokenAsync(user);
+            return new TokenResponse { Token = token };
         }
     }
 }

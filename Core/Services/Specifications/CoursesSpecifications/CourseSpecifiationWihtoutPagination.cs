@@ -14,7 +14,7 @@ namespace Services.Specifications.CoursesSpecifications
             &&
             (!queryParams.CategpryId.HasValue || C.CategoryId == queryParams.CategpryId)
             &&
-            (string.IsNullOrEmpty(queryParams.search) || C.Title.ToLower().Contains(queryParams.search.ToLower()) || C.Description!.ToLower().Contains(queryParams.search.ToLower())))
+            (string.IsNullOrEmpty(queryParams.search) || C.Title.ToLower().Contains(queryParams.search.ToLower()) || (C.Description ?? "").ToLower().Contains(queryParams.search.ToLower())))
         {
             
         }

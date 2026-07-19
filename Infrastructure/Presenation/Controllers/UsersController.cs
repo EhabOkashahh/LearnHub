@@ -14,6 +14,7 @@ namespace Presenation.Controllers
     public class UsersController(IServiceManager serviceManager) : ControllerBase
     {
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
@@ -59,6 +60,18 @@ namespace Presenation.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             await serviceManager.UserService.RequestInstructorAsync(userId, ct);
             return Ok();
+        }
+
+        [HttpGet("me/token")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult<TokenResponse>> RefreshToken(CancellationToken ct)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await serviceManager.UserService.RefreshTokenAsync(userId, ct);
+            return Ok(result);
         }
     }
 }

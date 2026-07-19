@@ -38,6 +38,13 @@ namespace Presistence.Data.Seeding
                    Name = "Student",
                 });
             }
+            else
+            {
+                string[] requiredRoles = ["SuperAdmin", "Admin", "Instructor", "Student"];
+                foreach (var roleName in requiredRoles)
+                    if (!await _roleManager.RoleExistsAsync(roleName))
+                        await _roleManager.CreateAsync(new IdentityRole(roleName));
+            }
 
             if (!_context.Users.Any())
             {
@@ -62,7 +69,17 @@ namespace Presistence.Data.Seeding
 
                 await _userManager.AddToRoleAsync(SuperAdmin , "SuperAdmin");
                 await _userManager.AddToRoleAsync(Admin , "Admin");
-            };
+            }
+            else
+            {
+                var superAdminUser = await _userManager.FindByEmailAsync("SuperAdmin@gmail.com");
+                if (superAdminUser is not null && !await _userManager.IsInRoleAsync(superAdminUser, "SuperAdmin"))
+                    await _userManager.AddToRoleAsync(superAdminUser, "SuperAdmin");
+
+                var adminUser = await _userManager.FindByEmailAsync("Admin@gmail.com");
+                if (adminUser is not null && !await _userManager.IsInRoleAsync(adminUser, "Admin"))
+                    await _userManager.AddToRoleAsync(adminUser, "Admin");
+            }
         }
     }
 }

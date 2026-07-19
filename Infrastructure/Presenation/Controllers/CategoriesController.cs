@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presenation.CustomAttributes;
@@ -33,6 +34,7 @@ namespace Presenation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
@@ -43,6 +45,7 @@ namespace Presenation.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
@@ -54,6 +57,7 @@ namespace Presenation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]

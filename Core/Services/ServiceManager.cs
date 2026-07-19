@@ -31,7 +31,7 @@ namespace Services
         public ICartServices CartServices { get; } = new CartServices(cartRepository, mapper);
         public ICacheService CacheService { get; } = new CacheService(distributedCache);
         public IAuthService AuthService { get; } = new AuthService(_userManager, mapper, _jwtOptions);
-        public IUsersService UserService { get; } = new UserService(_userManager, mapper, _uof);
-        public IAdminService AdminService { get; } = new AdminServices(_uof, mapper, _auth,_userManager);
+        public IUsersService UserService { get; } = new UserService(_userManager, mapper, _uof, _auth);
+        public IAdminService AdminService { get; } = new AdminServices(_uof, mapper, _userManager);
     }
 }

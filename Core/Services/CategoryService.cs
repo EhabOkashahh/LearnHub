@@ -41,15 +41,17 @@ namespace Services
             if (category is null) throw new CateoryNotFoundException(Id);
 
             _mapper.Map(request, category);
+            await _uof.SaveChangesAsync(ct);
         }
 
         public async Task DeleteCategoryAsync(Guid Id, CancellationToken ct)
         {
             var spec = new CategorySpec(Id);
-            var exists = await _uof.GetRepository<Guid, Category>().IsExsists(spec);
-            if (!exists) throw new CateoryNotFoundException(Id);
+            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            if (category is null) throw new CateoryNotFoundException(Id);
 
             _uof.GetRepository<Guid, Category>().Delete(Id);
+            await _uof.SaveChangesAsync(ct);
         }
     }
 }

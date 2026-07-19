@@ -69,7 +69,7 @@ namespace Services
                 issuer : _jwtOptions.Value.Issuer,
                 audience: _jwtOptions.Value.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddDays(_jwtOptions.Value.DurationInDays),
+                expires: DateTime.UtcNow.AddDays(_jwtOptions.Value.DurationInDays),
                 signingCredentials: new SigningCredentials(key,SecurityAlgorithms.HmacSha256)
             );
 

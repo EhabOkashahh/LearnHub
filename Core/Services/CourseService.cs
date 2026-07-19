@@ -53,24 +53,27 @@ namespace Services
             await _uof.SaveChangesAsync(ct);
         }
 
-        public async Task UpdateCourseAsync(Guid Id, UpdateCourseRequest request, CancellationToken ct)
+        public async Task UpdateCourseAsync(Guid Id, UpdateCourseRequest request, string userId, CancellationToken ct)
         {
-            var spec = new CourseByIdSpec(Id);
+            var spec = new CoursesSpec(Id,userId);
             var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,Id,ct);
 
             if(course is null) throw new CourseNotFoundException(Id);
 
             _mapper.Map(request,course);
+            await _uof.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteCourseAsync(Guid Id, CancellationToken ct)
+        public async Task DeleteCourseAsync(Guid Id, string userId, CancellationToken ct)
         {
-            var spec = new CourseByIdSpec(Id);
-            var exists = await _uof.GetRepository<Guid,Course>().IsExsists(spec);
+            var spec = new CoursesSpec(Id);
+            var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,Id,ct);
 
-            if(!exists) throw new CourseNotFoundException(Id);
+            if(course is null) throw new CourseNotFoundException(Id);
+            if (course.InstructorId != userId) throw new UnauthorizedAccessException("You can only delete your own courses");
 
            _uof.GetRepository<Guid,Course>().Delete(Id);
+           await _uof.SaveChangesAsync(ct);
         }
     }
 }       

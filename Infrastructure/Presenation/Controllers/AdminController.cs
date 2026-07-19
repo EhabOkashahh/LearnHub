@@ -10,7 +10,7 @@ namespace Presenation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class AdminController(IServiceManager serviceManager) : ControllerBase
     {
         [HttpGet("requests")]
@@ -23,23 +23,23 @@ namespace Presenation.Controllers
         }
 
         [HttpPut("requests/{id}/approve")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApproveInstructorResponse))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<ApproveInstructorResponse>> ApproveRequest(Guid id, CancellationToken ct)
+        public async Task<IActionResult> ApproveRequest(Guid id, CancellationToken ct)
         {
-            var result = await serviceManager.AdminService.ApproveRequestAsync(id, ct);
-            return Ok(result);
+            await serviceManager.AdminService.ApproveRequestAsync(id, ct);
+            return NoContent();
         }
 
         [HttpPut("requests/{id}/reject")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApproveInstructorResponse))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<ApproveInstructorResponse>> RejectRequest(Guid id, CancellationToken ct)
+        public async Task<IActionResult> RejectRequest(Guid id, CancellationToken ct)
         {
-            var result = await serviceManager.AdminService.RejectRequestAsync(id, ct);
-            return Ok(result);
+            await serviceManager.AdminService.RejectRequestAsync(id, ct);
+            return NoContent();
         }
     }
 }

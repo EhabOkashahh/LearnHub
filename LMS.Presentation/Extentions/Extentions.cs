@@ -14,6 +14,7 @@ using ServicesAbstraction.Auth;
 using System.Text;
 using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace LMS.Presentation.Extentions
 {
@@ -120,7 +121,13 @@ namespace LMS.Presentation.Extentions
                     ValidateLifetime = true,
 
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.TokenKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.TokenKey)),
+
+                    RoleClaimType = ClaimTypes.Role,
+
+                    
+
+                    
                 };
             });
         }

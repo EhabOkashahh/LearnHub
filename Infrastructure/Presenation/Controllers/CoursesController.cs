@@ -58,7 +58,8 @@ namespace Presenation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> UpdateCourse(Guid id, [FromBody]UpdateCourseRequest request, CancellationToken ct)
         {
-            await serviceManager.CourseService.UpdateCourseAsync(id, request, ct);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await serviceManager.CourseService.UpdateCourseAsync(id, request, userId, ct);
             return NoContent();
         }
 
@@ -69,7 +70,8 @@ namespace Presenation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> DeleteCourse(Guid id, CancellationToken ct)
         {
-            await serviceManager.CourseService.DeleteCourseAsync(id, ct);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await serviceManager.CourseService.DeleteCourseAsync(id, userId, ct);
             return NoContent();
         }
     }
