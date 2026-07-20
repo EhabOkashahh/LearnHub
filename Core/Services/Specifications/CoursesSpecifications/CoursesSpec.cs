@@ -68,6 +68,7 @@ namespace Services.Specifications.CoursesSpecifications
         private void ApplyIncludeExpression()
         {
             IncludeExpression.Add(X => X.Category);
+            IncludeExpression.Add(X => X.Instructor);
             IncludeExpression.Add(X => X.CourseSections);
         }
     }

@@ -12,7 +12,9 @@ namespace Services.Mapping
     {
         public AdminProfile()
         {
-            CreateMap<InstructorRequest,InstructorRequestResponse>().ReverseMap();
+            CreateMap<InstructorRequest, InstructorRequestResponse>()
+                .ForMember(d => d.ReviewedAt, o => o.MapFrom(s => s.UpdatedAt))
+                .ReverseMap();
         }
     }
 }

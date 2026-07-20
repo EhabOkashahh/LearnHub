@@ -40,7 +40,7 @@ namespace Services
             return _mapper.Map<CourseResponse>(course);
         }
 
-        public async Task CreateCourseAsync(string instructorId, CreateCourseRequest request,CancellationToken ct)
+        public async Task<Guid> CreateCourseAsync(string instructorId, CreateCourseRequest request,CancellationToken ct)
         {
             var CatSpec = new CategorySpec(request.CategoryId);
             var categoryExists = await _uof.GetRepository<Guid,Category>().IsExsists(CatSpec);
@@ -51,6 +51,7 @@ namespace Services
             course.InstructorId = instructorId;
             await _uof.GetRepository<Guid,Course>().AddAsync(course);
             await _uof.SaveChangesAsync(ct);
+            return course.Id;
         }
 
         public async Task UpdateCourseAsync(Guid Id, UpdateCourseRequest request, string userId, CancellationToken ct)

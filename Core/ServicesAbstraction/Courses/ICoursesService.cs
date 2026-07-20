@@ -8,7 +8,7 @@ namespace ServicesAbstraction.Courses
     {
         Task<PaginatedResponse<CourseResponse>> GetAllCoursesAsync(CourseQueryParams queryParams,CancellationToken cancellationToken);
         Task<CourseResponse?> GetCourseByIdAsync(Guid Id, CancellationToken cancellationToken);
-        Task CreateCourseAsync(string instructorId, CreateCourseRequest request ,CancellationToken cancellationToken);
+        Task<Guid> CreateCourseAsync(string instructorId, CreateCourseRequest request ,CancellationToken cancellationToken);
         Task UpdateCourseAsync(Guid Id, UpdateCourseRequest request, string userId, CancellationToken cancellationToken);
         Task DeleteCourseAsync(Guid Id, string userId, CancellationToken cancellationToken);
     }

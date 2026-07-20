@@ -7,14 +7,14 @@ namespace Shared.DTOS.Courses
 {
     public class UpdateCourseRequest
     {
-        public string? Title { get; set; } = null!;
+        public string? Title { get; set; }
 
-        public string? Description { get; set; } = null!;
+        public string? Description { get; set; }
 
-        public string? ThumbnailUrl { get; set; } = null!;
-        public decimal? Price { get; set; } = default!;
-        public string? Level { get; set; } = null!;
+        public string? ThumbnailUrl { get; set; }
+        public decimal? Price { get; set; }
+        public string? Level { get; set; }
 
-        public Guid? CategoryId { get; set; } = default!;
+        public Guid? CategoryId { get; set; }
     }
 }

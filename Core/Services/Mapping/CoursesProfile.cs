@@ -9,7 +9,10 @@ namespace Services.Mapping
         public CoursesProfile()
         {
             CreateMap<Course, CourseResponse>().ForMember(D => D.ThumbnailUrl , O => O.MapFrom(new CourseThumbnailResolver()))
-                                               .ForMember(C => C.CategoryName , O => O.MapFrom(S => S.Category.Name)).ReverseMap();
+                                               .ForMember(C => C.CategoryName , O => O.MapFrom(S => S.Category.Name))
+                                               .ForMember(C => C.Status, O => O.MapFrom(S => S.Status.ToString()))
+                                               .ForMember(C => C.InstructorName, O => O.MapFrom(S => S.Instructor.DisplayName))
+                                               .ReverseMap();
 
             CreateMap<CreateCourseRequest, Course>().ReverseMap();
             CreateMap<UpdateCourseRequest, Course>()

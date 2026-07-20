@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
@@ -15,8 +12,9 @@ namespace Presenation.Controllers
     {
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetCartAsync(string cartId)
+        public async Task<IActionResult> GetCartAsync()
         {
+            var cartId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var res = await _serviceManager.CartServices.GetCartAsync(cartId);
             return Ok(res);
         }
@@ -25,14 +23,16 @@ namespace Presenation.Controllers
         [Authorize]
         public async Task<IActionResult> CreateOrUpdateCartAsync([FromBody] CartDto cart)
         {
+            cart.Id = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var res = await _serviceManager.CartServices.CreateCartAsync(cart, TimeSpan.FromDays(10));
             return Ok(res);
         }
 
         [HttpDelete]
         [Authorize]
-        public async Task<IActionResult> DeleteCartAsync(string cartId)
+        public async Task<IActionResult> DeleteCartAsync()
         {
+            var cartId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             await _serviceManager.CartServices.DeleteCartAsync(cartId);
             return NoContent();
         }

@@ -16,10 +16,15 @@ namespace Shared.DTOS.Courses
         public int TotalDurationMinutes { get; set; }
         public decimal Price { get; set; }
         public string Level { get; set; } = null!;
+        public string Status { get; set; } = null!;
 
         public Guid CategoryId { get; set; }
 
         public string CategoryName { get; set; } = null!;
+
+        public string InstructorId { get; set; } = null!;
+        public string InstructorName { get; set; } = null!;
+
         public ICollection<CourseSectionDTO> Sections { get; set; } = new List<CourseSectionDTO>();
     }
 }

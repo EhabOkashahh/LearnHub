@@ -37,7 +37,7 @@ namespace Presenation.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
@@ -46,8 +46,8 @@ namespace Presenation.Controllers
         public async Task<IActionResult> CreateCourse([FromBody]CreateCourseRequest request, CancellationToken ct)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            await serviceManager.CourseService.CreateCourseAsync(userId, request, ct);
-            return Ok();
+            var courseId = await serviceManager.CourseService.CreateCourseAsync(userId, request, ct);
+            return CreatedAtAction(nameof(GetCourseById), new { id = courseId }, null);
         }
 
         [HttpPut("{id}")]
