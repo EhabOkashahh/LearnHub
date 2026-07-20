@@ -15,6 +15,8 @@ namespace Services.Specifications
             Criteria = Expression;
         }
         public List<Expression<Func<TEntity, object>>> IncludeExpression { get; set; } = new List<Expression<Func<TEntity, object>>>();
+
+        public List<Func<IQueryable<TEntity>,IQueryable<TEntity>>> IncludeAction { get; set; } = new();
         public Expression<Func<TEntity, bool>>? Criteria { get; set; }
         public Expression<Func<TEntity, object>>? OrderByAsc { get; set; }
         public Expression<Func<TEntity, object>>? OrderByDesc { get; set; }
@@ -43,6 +45,11 @@ namespace Services.Specifications
         public void AddOrderByDesc(Expression<Func<TEntity, object>> orderByDesc)
         {
             OrderByDesc = orderByDesc;
+        }
+
+        public void AddInclude(Func<IQueryable<TEntity>,IQueryable<TEntity>> action)
+        {
+            IncludeAction.Add(action);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Domain.Contracts;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Presistence.Data.Contexts;
 
 namespace Presistence
@@ -46,6 +47,11 @@ namespace Presistence
             if(spec.IncludeExpression.Count > 0)
             {
                 query = spec.IncludeExpression.Aggregate(query, (current, includeExpession) => current.Include(includeExpession));
+            }
+
+            foreach(var action in spec.IncludeAction)
+            {
+                query = action(query);
             }
 
             return query;

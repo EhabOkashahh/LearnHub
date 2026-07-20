@@ -1,5 +1,6 @@
 using Domain.Entities.Courses;
 using Domain.Entities.Courses.Enums;
+using Microsoft.EntityFrameworkCore;
 using Shared.DTOS.Courses;
 
 namespace Services.Specifications.CoursesSpecifications
@@ -10,10 +11,15 @@ namespace Services.Specifications.CoursesSpecifications
         {
             ApplyIncludeExpression();
         }
-        public CoursesSpec(Guid id) : base(C => C.Id == id )
+        public CoursesSpec(Guid id, bool IncludeNavigation = false) : base(C => C.Id == id)
         {
-            
+            if(IncludeNavigation) ApplyIncludeExpression();
         }
+        public CoursesSpec(string userId) : base(C => C.InstructorId == userId)
+        {
+            ApplyIncludeExpression();
+        }
+
         public CoursesSpec(Guid id,string userId) : base(C => C.Id == id && C.Instructor.Id == userId)
         {
             ApplyIncludeExpression();
@@ -22,6 +28,22 @@ namespace Services.Specifications.CoursesSpecifications
 
         public CoursesSpec(CourseQueryParams queryParams)
         : base(C => 
+            (!queryParams.Level.HasValue || C.Level == queryParams.Level) 
+            &&
+            (!queryParams.CategpryId.HasValue || C.CategoryId == queryParams.CategpryId)
+            &&
+            (string.IsNullOrEmpty(queryParams.search) || C.Title.ToLower().Contains(queryParams.search.ToLower()) || C.Description!.ToLower().Contains(queryParams.search.ToLower()))
+            && C.Status == CourseStatus.Published)
+        {
+            ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
+            ApplySorting(queryParams.sort);
+            ApplyIncludeExpression();
+        }
+
+        public CoursesSpec(CourseQueryParams queryParams, string instructorId)
+        : base(C => 
+            C.InstructorId == instructorId
+            &&
             (!queryParams.Level.HasValue || C.Level == queryParams.Level) 
             &&
             (!queryParams.CategpryId.HasValue || C.CategoryId == queryParams.CategpryId)
@@ -67,9 +89,10 @@ namespace Services.Specifications.CoursesSpecifications
         }
         private void ApplyIncludeExpression()
         {
-            IncludeExpression.Add(X => X.Category);
-            IncludeExpression.Add(X => X.Instructor);
-            IncludeExpression.Add(X => X.CourseSections);
+            AddInclude(q => q.Include(x => x.Category)
+                            .Include(x => x.Instructor)
+                            .Include(x => x.CourseSections)
+                            .ThenInclude(x => x.Lessons));
         }
     }
 }

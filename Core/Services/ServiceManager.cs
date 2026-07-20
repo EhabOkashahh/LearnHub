@@ -27,6 +27,8 @@ namespace Services
           IAuthService _auth) : IServiceManager
     {
         public ICoursesService CourseService { get; } = new CourseService(_uof, mapper);
+        public ICourseSectionsService CourseSectionsService { get; } = new CourseSectionsService(_uof, mapper);
+        public ILessonsService LessonsService { get; } = new LessonsService(_uof, mapper);
         public ICategoriesService CategoryService { get; } = new CategoryService(_uof, mapper);
         public ICartServices CartServices { get; } = new CartServices(cartRepository, mapper);
         public ICacheService CacheService { get; } = new CacheService(distributedCache);

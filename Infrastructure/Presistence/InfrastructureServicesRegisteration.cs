@@ -12,6 +12,7 @@ using Services;
 using ServicesAbstraction;
 using ServicesAbstraction.Categories;
 using ServicesAbstraction.Courses;
+
 using StackExchange.Redis;
 
 namespace Presistence
@@ -27,6 +28,8 @@ namespace Presistence
             });
 
             services.AddScoped<ICoursesService, CourseService>();
+            services.AddScoped<ICourseSectionsService, CourseSectionsService>();
+            services.AddScoped<ILessonsService, LessonsService>();
             services.AddScoped<ICategoriesService, CategoryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICartRepository,CartRepository>();

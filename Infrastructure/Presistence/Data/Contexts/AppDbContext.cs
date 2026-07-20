@@ -1,4 +1,3 @@
-using Domain.Contracts;
 using Domain.Entities.Courses;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +12,7 @@ namespace Presistence.Data.Contexts
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseSection> CourseSections { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<LessonProgress> LessonProgress { get; set; }
 
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<InstructorRequest> InstructorRequests { get; set; }

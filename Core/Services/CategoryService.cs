@@ -41,6 +41,7 @@ namespace Services
             if (category is null) throw new CateoryNotFoundException(Id);
 
             _mapper.Map(request, category);
+            category.UpdatedAt = DateTime.UtcNow;
             await _uof.SaveChangesAsync(ct);
         }
 
