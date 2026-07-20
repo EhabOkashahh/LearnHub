@@ -14,6 +14,7 @@ namespace Shared.DTOS
         public int DurationMinutes { get; set; }
 
         public string VideoUrl { get; set; } = null!;
+        public bool IsFree { get; set; }
 
         public int Order { get; set; }
     }
