@@ -46,7 +46,7 @@ namespace Services
         public async Task<CourseResponse?> GetCourseByIdAsync(Guid Id, CancellationToken ct)
         {
             var spec = new CoursesSpec(Id,true);
-            var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,Id,ct);
+            var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,ct);
 
             if(course is null) throw new CourseNotFoundException(Id);
             
@@ -71,7 +71,7 @@ namespace Services
         public async Task UpdateCourseAsync(Guid Id, UpdateCourseRequest request, string userId, CancellationToken ct)
         {
             var spec = new CoursesSpec(Id,userId);
-            var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,Id,ct);
+            var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,ct);
 
             if(course is null) throw new CourseNotFoundException(Id);
 
@@ -101,7 +101,7 @@ namespace Services
         public async Task PublishCourseAsync(Guid Id, string userId, CancellationToken ct)
         {
             var spec = new CoursesSpec(Id, userId);
-            var course = await _uof.GetRepository<Guid, Course>().GetAsync(spec, Id, ct);
+            var course = await _uof.GetRepository<Guid, Course>().GetAsync(spec, ct);
             if (course is null) throw new CourseNotFoundException(Id);
             if (course.Status == CourseStatus.Published)
                 throw new BadRequestException("Course is already published");
@@ -114,7 +114,7 @@ namespace Services
         public async Task UnpublishCourseAsync(Guid Id, string userId, CancellationToken ct)
         {
             var spec = new CoursesSpec(Id, userId);
-            var course = await _uof.GetRepository<Guid, Course>().GetAsync(spec, Id, ct);
+            var course = await _uof.GetRepository<Guid, Course>().GetAsync(spec, ct);
             if (course is null) throw new CourseNotFoundException(Id);
             if (course.Status == CourseStatus.Draft)
                 throw new BadRequestException("Course is already a draft");
@@ -127,7 +127,7 @@ namespace Services
         public async Task DeleteCourseAsync(Guid Id, string userId, CancellationToken ct)
         {
             var spec = new CoursesSpec(Id,false);
-            var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,Id,ct);
+            var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,ct);
 
             if(course is null) throw new CourseNotFoundException(Id);
             if (course.InstructorId != userId) throw new UnauthorizedAccessException("You can only delete your own courses");

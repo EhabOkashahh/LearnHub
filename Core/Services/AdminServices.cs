@@ -26,8 +26,8 @@ namespace Services
 
         public async Task ApproveRequestAsync(Guid requestId, CancellationToken ct)
         {
-            var spec = new InstructorSpecifications();
-            var res = await _uof.GetRepository<Guid,InstructorRequest>().GetAsync(spec,requestId,ct);
+            var spec = new InstructorSpecifications(requestId);
+            var res = await _uof.GetRepository<Guid,InstructorRequest>().GetAsync(spec,ct);
 
             if(res is null) throw new UserNotFoundException(requestId.ToString());
 
@@ -43,8 +43,8 @@ namespace Services
 
         public async Task RejectRequestAsync(Guid requestId, CancellationToken ct)
         {
-            var spec = new InstructorSpecifications();
-            var res = await _uof.GetRepository<Guid,InstructorRequest>().GetAsync(spec,requestId,ct);
+            var spec = new InstructorSpecifications(requestId);
+            var res = await _uof.GetRepository<Guid,InstructorRequest>().GetAsync(spec,ct);
 
             if(res is null) throw new UserNotFoundException(requestId.ToString());
 

@@ -17,7 +17,7 @@ namespace Presistence.Data.Configurations.CourseConfigrations
                 .IsRequired()
                 .HasDefaultValue(false);
 
-            builder.HasOne<AppUser>()
+            builder.HasOne(x => x.Student)
                 .WithMany()
                 .HasForeignKey(x => x.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);

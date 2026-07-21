@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions.NotFoundExceptions
 {
-    public class UserNotFoundException(string email) : NotFoundException($"User with this email: {email} was not found")
+    public class UserNotFoundException(string claim) : NotFoundException($"User with this {claim} was not found")
     {
         
     }

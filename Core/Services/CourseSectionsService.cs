@@ -21,14 +21,14 @@ namespace Services
         public async Task<CourseSectionDTO> GetByIdAsync(Guid courseId, Guid id, CancellationToken ct)
         {
             var spec = new CourseSectionSpec(courseId, id);
-            var section = await _uof.GetRepository<Guid, CourseSection>().GetAsync(spec, id, ct);
+            var section = await _uof.GetRepository<Guid, CourseSection>().GetAsync(spec, ct);
             if (section is null) throw new NotFoundException($"Section with id: {id} was not found");
             return _mapper.Map<CourseSectionDTO>(section);
         }
 
         public async Task CreateAsync(Guid courseId, CreateCourseSectionRequest request, string userId, CancellationToken ct)
         {
-            var Course = await _uof.GetRepository<Guid,Course>().GetAsync(new CoursesSpec(courseId,false),courseId,ct);
+            var Course = await _uof.GetRepository<Guid,Course>().GetAsync(new CoursesSpec(courseId,false),ct);
             if(Course is null) throw new CourseNotFoundException(courseId);
 
             var section = _mapper.Map<CourseSection>(request);
@@ -42,7 +42,7 @@ namespace Services
             await GetCourseWithOwnerCheck(courseId, userId, ct);
 
             var spec = new CourseSectionSpec(courseId, id);
-            var section = await _uof.GetRepository<Guid, CourseSection>().GetAsync(spec, id, ct);
+            var section = await _uof.GetRepository<Guid, CourseSection>().GetAsync(spec, ct);
             if (section is null) throw new NotFoundException($"Section with id: {id} was not found");
 
             _mapper.Map(request, section);
@@ -55,7 +55,7 @@ namespace Services
             await GetCourseWithOwnerCheck(courseId, userId, ct);
 
             var spec = new CourseSectionSpec(courseId, id);
-            var section = await _uof.GetRepository<Guid, CourseSection>().GetAsync(spec, id, ct);
+            var section = await _uof.GetRepository<Guid, CourseSection>().GetAsync(spec, ct);
             if (section is null) throw new NotFoundException($"Section with id: {id} was not found");
 
             _uof.GetRepository<Guid, CourseSection>().Delete(id);
@@ -65,7 +65,7 @@ namespace Services
         private async Task<Course> GetCourseWithOwnerCheck(Guid courseId, string userId, CancellationToken ct)
         {
             var courseSpec = new CoursesSpec(courseId, userId);
-            var course = await _uof.GetRepository<Guid, Course>().GetAsync(courseSpec, courseId, ct);
+            var course = await _uof.GetRepository<Guid, Course>().GetAsync(courseSpec, ct);
             if (course is null) throw new NotFoundException($"Course with id: {courseId} was not found");
             return course;
         }

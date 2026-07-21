@@ -8,13 +8,11 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
     {
         public void Configure(EntityTypeBuilder<Enrollment> builder)
         {
-            builder.HasKey(x => new { x.StudentId, x.CourseId });
+            builder.HasKey(x => x.Id);
+            builder.HasIndex(x => new { x.StudentId, x.CourseId }).IsUnique();
 
             builder.Property(x => x.ProgressPercentage)
                 .HasDefaultValue(0.0);
-
-            builder.Property(x => x.EnrolledAt)
-                .IsRequired();
 
             builder.HasOne(x => x.Student)
                 .WithMany()

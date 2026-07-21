@@ -21,7 +21,7 @@ namespace Services
         public async Task<CategoryResponse?> GetCategoryByIdAsync(Guid Id, CancellationToken ct)
         {
             var spec = new CategorySpec(Id);
-            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, ct);
             if (category is null) throw new CateoryNotFoundException(Id);
 
             return _mapper.Map<CategoryResponse>(category);
@@ -37,7 +37,7 @@ namespace Services
         public async Task UpdateCategoryAsync(Guid Id, UpdateCategoryRequest request, CancellationToken ct)
         {
             var spec = new CategorySpec(Id);
-            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, ct);
             if (category is null) throw new CateoryNotFoundException(Id);
 
             _mapper.Map(request, category);
@@ -48,7 +48,7 @@ namespace Services
         public async Task DeleteCategoryAsync(Guid Id, CancellationToken ct)
         {
             var spec = new CategorySpec(Id);
-            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, Id, ct);
+            var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, ct);
             if (category is null) throw new CateoryNotFoundException(Id);
 
             _uof.GetRepository<Guid, Category>().Delete(Id);

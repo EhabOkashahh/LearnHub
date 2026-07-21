@@ -22,7 +22,7 @@ namespace Services
         public async Task<LessonDTO> GetByIdAsync(Guid courseId, Guid sectionId, Guid id, CancellationToken ct)
         {
             var spec = new LessonSpec(sectionId, id);
-            var lesson = await _uof.GetRepository<Guid, Lesson>().GetAsync(spec, id, ct);
+            var lesson = await _uof.GetRepository<Guid, Lesson>().GetAsync(spec, ct);
             if (lesson is null) throw new NotFoundException($"Lesson with id: {id} was not found");
             return _mapper.Map<LessonDTO>(lesson);
         }
@@ -42,7 +42,7 @@ namespace Services
             await VerifySectionOwnership(courseId, sectionId, userId, ct);
 
             var spec = new LessonSpec(sectionId, id);
-            var lesson = await _uof.GetRepository<Guid, Lesson>().GetAsync(spec, id, ct);
+            var lesson = await _uof.GetRepository<Guid, Lesson>().GetAsync(spec, ct);
             if (lesson is null) throw new NotFoundException($"Lesson with id: {id} was not found");
 
             _mapper.Map(request, lesson);
@@ -55,7 +55,7 @@ namespace Services
             await VerifySectionOwnership(courseId, sectionId, userId, ct);
 
             var spec = new LessonSpec(sectionId, id);
-            var lesson = await _uof.GetRepository<Guid, Lesson>().GetAsync(spec, id, ct);
+            var lesson = await _uof.GetRepository<Guid, Lesson>().GetAsync(spec, ct);
             if (lesson is null) throw new NotFoundException($"Lesson with id: {id} was not found");
 
             _uof.GetRepository<Guid, Lesson>().Delete(id);
@@ -65,7 +65,7 @@ namespace Services
         public async Task CompleteAsync(Guid lessonId, string studentId, CancellationToken ct)
         {
             var repo = _uof.GetRepository<Guid, LessonProgress>();
-            var existing = await repo.GetAsync(new LessonProgressSpec(lessonId, studentId), lessonId, ct);
+            var existing = await repo.GetAsync(new LessonProgressSpec(lessonId, studentId), ct);
 
             if (existing is not null)
             {
@@ -91,7 +91,7 @@ namespace Services
         public async Task UncompleteAsync(Guid lessonId, string studentId, CancellationToken ct)
         {
             var repo = _uof.GetRepository<Guid, LessonProgress>();
-            var existing = await repo.GetAsync(new LessonProgressSpec(lessonId, studentId), lessonId, ct);
+            var existing = await repo.GetAsync(new LessonProgressSpec(lessonId, studentId), ct);
 
             if (existing is null)
                 throw new BadRequestException("Lesson is not completed yet");
@@ -104,7 +104,7 @@ namespace Services
         private async Task VerifySectionOwnership(Guid courseId, Guid sectionId, string userId, CancellationToken ct)
         {
             var courseSpec = new CoursesSpec(courseId, userId);
-            var course = await _uof.GetRepository<Guid, Course>().GetAsync(courseSpec, courseId, ct);
+            var course = await _uof.GetRepository<Guid, Course>().GetAsync(courseSpec, ct);
             if (course is null) throw new NotFoundException($"Course with id: {courseId} was not found");
         }
     }

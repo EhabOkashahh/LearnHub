@@ -13,6 +13,11 @@ namespace Services.Specifications.UserSpecifications
         {
             IncludeExpression.Add(x => x.User);
         }
+
+        public InstructorSpecifications(Guid id) : base(x => x.Id == id)
+        {
+            IncludeExpression.Add(x => x.User);
+        }
         
         public InstructorSpecifications(string userId) : base(x => x.UserId == userId)
         {
