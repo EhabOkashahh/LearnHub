@@ -123,5 +123,18 @@ namespace Presenation.Controllers
             var progress = await serviceManager.CourseService.GetProgressAsync(courseId, userId, ct);
             return Ok(progress);
         }
+
+        [HttpPost("{id}/enroll")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> Enroll(Guid id, CancellationToken ct)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await serviceManager.EnrollmentsService.EnrollAsync(userId, id, ct);
+            return NoContent();
+        }
     }
 }

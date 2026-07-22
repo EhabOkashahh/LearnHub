@@ -17,5 +17,6 @@ namespace ServicesAbstraction
         public IAuthService AuthService { get;}
         public IUsersService UserService { get;}
         public IAdminService AdminService { get;}
+        public IEnrollmentsService EnrollmentsService { get;}
     }
 }

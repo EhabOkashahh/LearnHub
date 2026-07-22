@@ -35,6 +35,7 @@ namespace Presistence
             services.AddScoped<ICartRepository,CartRepository>();
             services.AddScoped<ICacheService,CacheService>();
             services.AddScoped<IDbInitializer,DbInitializer>();
+            services.AddScoped<IEnrollmentsService, EnrollmentsService>();
             
             services.AddSingleton<IConnectionMultiplexer>((sp) => {
                 var config = sp.GetRequiredService<IConfiguration>();

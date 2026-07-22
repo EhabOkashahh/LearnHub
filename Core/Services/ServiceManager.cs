@@ -35,5 +35,6 @@ namespace Services
         public IAuthService AuthService { get; } = new AuthService(_userManager, mapper, _jwtOptions);
         public IUsersService UserService { get; } = new UserService(_userManager, mapper, _uof, _auth);
         public IAdminService AdminService { get; } = new AdminServices(_uof, mapper, _userManager);
+        public IEnrollmentsService EnrollmentsService { get; } = new EnrollmentsService(_uof, _userManager, mapper);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Domain.Contracts;
 using Domain.Entities.Courses;
 using Domain.Entities.Identity;
@@ -15,7 +16,7 @@ using Shared.DTOS.Courses;
 
 namespace Services
 {
-    public class EnrollmentsService(IUnitOfWork _uof,UserManager<AppUser> _userManager) : IEnrollmentsService
+    public class EnrollmentsService(IUnitOfWork _uof,UserManager<AppUser> _userManager, IMapper _mapper) : IEnrollmentsService
     {
         public async Task EnrollAsync(string studentId, Guid CourseId, CancellationToken ct)
         {
@@ -30,10 +31,9 @@ namespace Services
 
             if(IsCourseInstructor) throw new BadRequestException("You cannot enroll in your own course");
             
-            var EnrollmentSpec = new EnrollmentsSpec(studentId,CourseId);
-            var StudentEnrollemnts = (await _uof.GetRepository<Guid,Enrollment>().GetAllAsync(EnrollmentSpec,ct)).Any();
+            var IsEnroll = await IsEnrolledAsync(studentId,CourseId,ct);
 
-            if(StudentEnrollemnts) throw new BadRequestException("You've already enrolled at this course");
+            if(IsEnroll) throw new BadRequestException("You've already enrolled at this course");
 
 
             var EnrollmentEntity = new Enrollment()
@@ -45,9 +45,22 @@ namespace Services
             await _uof.SaveChangesAsync(ct);
         }
 
-        public Task GetMyEnrollmentsAsync(string StudentId, CourseQueryParams queryParams, CancellationToken ct)
+        public async Task<PaginatedResponse<CourseResponse>> GetMyEnrollmentsAsync(string StudentId, CourseQueryParams queryParams, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            var EnrollmentSpec = new EnrollmentsSpec(StudentId,queryParams);
+            var enrollments = await _uof.GetRepository<Guid,Enrollment>().GetAllAsync(EnrollmentSpec,ct);
+            var courses = _mapper.Map<IEnumerable<CourseResponse>>(enrollments.Select(x =>x.Course));
+
+            var CountSpec = new EnrollmentsSpec(StudentId, queryParams, paginated: false);
+            var totalCount = await _uof.GetRepository<Guid,Enrollment>().GetCountAsync(CountSpec);
+
+            return new PaginatedResponse<CourseResponse>(pageIndex: queryParams.PageIndex!.Value,pageSize: queryParams.PageSize!.Value,totalCount:totalCount,data:courses);
+        }
+
+        public async Task<bool> IsEnrolledAsync(string studentId, Guid courseId, CancellationToken ct)
+        {
+            var spec = new EnrollmentsSpec(studentId, courseId);
+            return await _uof.GetRepository<Guid, Enrollment>().IsExsists(spec);
         }
     }
 }
