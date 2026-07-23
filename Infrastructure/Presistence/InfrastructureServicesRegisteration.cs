@@ -8,6 +8,9 @@ using Presistence.Data;
 using Presistence.Data.Contexts;
 using Presistence.Data.Seeding;
 using Presistence.Repository;
+using RedLockNet;
+using RedLockNet.SERedis;
+using RedLockNet.SERedis.Configuration;
 using Services;
 using ServicesAbstraction;
 using ServicesAbstraction.Categories;
@@ -40,6 +43,12 @@ namespace Presistence
             services.AddSingleton<IConnectionMultiplexer>((sp) => {
                 var config = sp.GetRequiredService<IConfiguration>();
                 return ConnectionMultiplexer.Connect(config.GetConnectionString("RedisConnnection")!);
+            });
+
+            services.AddSingleton<IDistributedLockFactory>((sp) =>
+            {
+                var ConnectionMultiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
+                return RedLockFactory.Create(new []{new RedLockMultiplexer(ConnectionMultiplexer)});
             });
 
             services.AddStackExchangeRedisCache(op =>

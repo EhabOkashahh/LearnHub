@@ -1,46 +1,89 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Contracts;
 using Domain.Entities.Cart;
+using Domain.Entities.Courses;
+using Domain.Entities.Courses.Enums;
 using Domain.Exceptions.BadRequestExceptions;
 using Domain.Exceptions.NotFoundExceptions;
+using Services.Specifications.CoursesSpecifications;
 using ServicesAbstraction.Cart;
 using Shared.DTOS.Cart;
+using RedLockNet;
+using System.Data.Common;
 
 namespace Services
 {
-    public class CartServices(ICartRepository _cartRepository, IMapper _mapper) : ICartServices
+    public class CartServices(
+        ICartRepository _cartRepository,
+        IUnitOfWork _uof,
+        IMapper _mapper,
+        TimeSpan _cartTtl,
+        IDistributedLockFactory _LockFactory) : ICartServices
     {
-        public async Task<CartDto> GetCartAsync(string cartId)
+        public async Task<CartResponse> GetCartAsync(string userId, CancellationToken ct)
         {
-            var cart = await _cartRepository.GetCartAsync(cartId);
-            if(cart is null) throw new CartNotFoundException(cartId);
+            var cart = await _cartRepository.GetCartAsync(userId);
+            if (cart is null || cart.Items.Count == 0)
+                return new CartResponse { Id = userId, Items = [] };
 
-            return _mapper.Map<CartDto>(cart);
-        }
-        public async Task<CartDto> CreateCartAsync(CartDto cartdto, TimeSpan ExistanceDuration)
-        {
-            var cart = _mapper.Map<Cart>(cartdto);
-            var res = await _cartRepository.AddCartAsync(cart,ExistanceDuration);
+            var courseIds = cart.Items.Select(i => i.CourseId).ToList();
+            var spec = new CoursesByIdsSpec(courseIds);
+            var courses = await _uof.GetRepository<Guid, Course>().GetAllAsync(spec, ct);
 
-            if(res is null) throw new BadRequestException("Failed to create or update cart - something went wrong while saving to Redis ");
+            var items = _mapper.Map<IEnumerable<CartItemResponse>>(courses);
 
-            return _mapper.Map<CartDto>(res);
+            return new CartResponse { Id = userId, Items = items };
         }
 
-        public async Task<bool> DeleteCartAsync(string cartId)
+        public async Task AddItemAsync(string userId, Guid courseId, CancellationToken ct)
         {
+            
+            await using var redlock = await _LockFactory.CreateLockAsync(
+                userId,
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromMilliseconds(200)
+            );
 
-            await GetCartAsync(cartId);
+            if(!redlock.IsAcquired) throw new BadRequestException("Cart is busy, try again");
 
-            var res = await _cartRepository.DeleteCart(cartId);
+            var cart = await _cartRepository.GetCartAsync(userId)
+                ?? new Cart { Id = userId, Items = [] };
 
-            if(!res) throw new BadRequestException("Failed to delete cart — something went wrong while deleting from Redis");
+            if (cart.Items.Any(i => i.CourseId == courseId))
+                throw new BadRequestException("This course is already in your cart");
 
-            return res;
+            var courseSpec = new CoursesSpec(courseId);
+            var course = await _uof.GetRepository<Guid, Course>().GetAsync(courseSpec, ct);
+            if (course is null)
+                throw new CourseNotFoundException(courseId);
+
+            if (course.Status != CourseStatus.Published)
+                throw new BadRequestException("This course is not available");
+
+            if (course.InstructorId == userId)
+                throw new BadRequestException("You cannot add your own course to the cart");
+
+            var enrollmentSpec = new EnrollmentsSpec(userId, courseId);
+            if (await _uof.GetRepository<Guid, Enrollment>().IsExsists(enrollmentSpec))
+                throw new BadRequestException("You are already enrolled in this course");
+
+            cart.Items.Add(new CartItem { CourseId = courseId });
+            await _cartRepository.AddCartAsync(cart, _cartTtl);
+        }
+
+        public async Task RemoveItemAsync(string userId, Guid courseId, CancellationToken ct)
+        {
+            var cart = await _cartRepository.GetCartAsync(userId);
+            if (cart is null) return;
+
+            cart.Items.RemoveAll(i => i.CourseId == courseId);
+            await _cartRepository.AddCartAsync(cart, _cartTtl);
+        }
+
+        public async Task ClearCartAsync(string userId, CancellationToken ct)
+        {
+            await _cartRepository.DeleteCart(userId);
         }
 
     }

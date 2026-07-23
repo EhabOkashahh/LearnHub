@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Shared.DTOS.Cart;
 
 namespace ServicesAbstraction.Cart
 {
     public interface ICartServices
     {
-        Task<CartDto> GetCartAsync(string cartId);
-        Task<CartDto> CreateCartAsync(CartDto cartdto, TimeSpan ExistanceDuration);
-        Task<bool> DeleteCartAsync(string cartId);
+        Task<CartResponse> GetCartAsync(string userId, CancellationToken ct);
+        Task AddItemAsync(string userId, Guid courseId, CancellationToken ct);
+        Task RemoveItemAsync(string userId, Guid courseId, CancellationToken ct);
+        Task ClearCartAsync(string userId, CancellationToken ct);
     }
 }
