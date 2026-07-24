@@ -11,7 +11,8 @@ namespace Services.Specifications.CoursesSpecifications
         {
             ApplyIncludeExpression();
         }
-        public CoursesSpec(Guid id, bool IncludeNavigation = false) : base(C => C.Id == id)
+        public CoursesSpec(Guid id, bool IncludeNavigation = false, bool publishedOnly = true) 
+            : base(C => C.Id == id && (!publishedOnly || C.Status == CourseStatus.Published))
         {
             if(IncludeNavigation) ApplyIncludeExpression();
         }

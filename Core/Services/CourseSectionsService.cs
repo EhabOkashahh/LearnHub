@@ -28,7 +28,7 @@ namespace Services
 
         public async Task CreateAsync(Guid courseId, CreateCourseSectionRequest request, string userId, CancellationToken ct)
         {
-            var Course = await _uof.GetRepository<Guid,Course>().GetAsync(new CoursesSpec(courseId,false),ct);
+            var Course = await _uof.GetRepository<Guid,Course>().GetAsync(new CoursesSpec(courseId, userId),ct);
             if(Course is null) throw new CourseNotFoundException(courseId);
 
             var section = _mapper.Map<CourseSection>(request);

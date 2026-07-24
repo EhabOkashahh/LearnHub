@@ -34,7 +34,7 @@ namespace Presistence.Repository
 
             if(!isAdded) return null;
 
-            return await GetCartAsync(cart.Id);
+            return cart;
         }
         public async Task<bool> DeleteCart(string CartId) => await _database.KeyDeleteAsync(CartId);
         

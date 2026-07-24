@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Services.Specifications.UserSpecifications;
 using ServicesAbstraction.Users;
 using Shared.DTOS.Admin;
+using Shared.DTOS.Courses;
 
 namespace Services
 {
@@ -16,12 +17,16 @@ namespace Services
          IMapper _mapper,
          UserManager<AppUser> _userManager) : IAdminService
     {
-        public async Task<IEnumerable<InstructorRequestResponse>> GetInstructorRequestsAsync(RequestStatus? status, CancellationToken ct)
+        public async Task<PaginatedResponse<InstructorRequestResponse>> GetInstructorRequestsAsync(RequestStatus? status, int pageIndex, int pageSize, CancellationToken ct)
         {
-            var spec = status.HasValue? new InstructorSpecifications(status.Value) : new InstructorSpecifications();
-            var res = await _uof.GetRepository<Guid,InstructorRequest>().GetAllAsync(spec,ct);
+            var spec = new InstructorSpecifications(status, pageIndex, pageSize);
+            var res = await _uof.GetRepository<Guid, InstructorRequest>().GetAllAsync(spec, ct);
 
-            return _mapper.Map<IEnumerable<InstructorRequestResponse>>(res);
+            var countSpec = new InstructorCountSpec(status);
+            var totalCount = await _uof.GetRepository<Guid, InstructorRequest>().GetCountAsync(countSpec);
+
+            var mapped = _mapper.Map<IEnumerable<InstructorRequestResponse>>(res);
+            return new PaginatedResponse<InstructorRequestResponse>(pageIndex, pageSize, totalCount, mapped);
         }
 
         public async Task ApproveRequestAsync(Guid requestId, CancellationToken ct)

@@ -59,6 +59,11 @@ namespace LMS.Presentation.Extentions
                 app.MapGet("/", () => Results.Redirect("/scalar/v1"));
             }
 
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHsts();
+            }
+
             app.UseHttpsRedirection();
             app.UseAuthentication();  
             app.UseAuthorization();  
@@ -169,12 +174,19 @@ namespace LMS.Presentation.Extentions
         }
         private static JwtOptions ConfigureAllJwtOptions(this IServiceCollection services)
         {
+            var tokenKey = Environment.GetEnvironmentVariable("TokenKey")!;
+            if (string.IsNullOrEmpty(tokenKey) || tokenKey.Length < 32)
+                throw new InvalidOperationException("TokenKey environment variable must be set and be at least 32 characters.");
+
+            var durationStr = Environment.GetEnvironmentVariable("JwtDuration");
+            var durationInDays = string.IsNullOrEmpty(durationStr) ? 15.0 : double.Parse(durationStr);
+
             var jwtOptions = new JwtOptions
             {
-                TokenKey = Environment.GetEnvironmentVariable("TokenKey")!,
+                TokenKey = tokenKey,
                 Issuer = Environment.GetEnvironmentVariable("API_BASE_URL")!,
                 Audience = Environment.GetEnvironmentVariable("JwtAudiance")!,
-                DurationInDays = double.Parse(Environment.GetEnvironmentVariable("JwtDuration")!)
+                DurationInDays = durationInDays
             };
 
             services.AddSingleton<IOptions<JwtOptions>>(new OptionsWrapper<JwtOptions>(jwtOptions));

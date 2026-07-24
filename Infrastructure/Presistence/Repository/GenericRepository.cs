@@ -43,7 +43,7 @@ namespace Presistence.Repository
             }
         }
 
-        public async Task<bool> IsExsists(ISpecifications<Tkey, TEntity> spec)
+        public async Task<bool> Exists(ISpecifications<Tkey, TEntity> spec)
         {
             return await SpecificationsEvaluator.GetQuery(InputQuery, spec).AnyAsync();    
         }

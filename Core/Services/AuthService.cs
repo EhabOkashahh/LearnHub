@@ -19,10 +19,9 @@ namespace Services
         public async Task<UserAuthResponse> LoginAsync(LoginRequest request)
         {
             var user = await _userManger.FindByEmailAsync(request.Email);
-            if(user is null) throw new UserNotFoundException(request.Email);
 
-            var authorize = await _userManger.CheckPasswordAsync(user,request.Password);
-            if(!authorize) throw new UnAuthorizedException();
+            if(user is null || !await _userManger.CheckPasswordAsync(user, request.Password))
+                throw new UnAuthorizedException();
 
             return new UserAuthResponse(){
                 DisplayName = user.DisplayName,
@@ -37,7 +36,11 @@ namespace Services
 
             var res = await _userManger.CreateAsync(user,request.Password);
 
-            if(!res.Succeeded) throw new BadRequestException(string.Join(",",res.Errors.Select(E => E.Description)));
+            if(!res.Succeeded)
+            {
+                var errors = string.Join(", ", res.Errors.Select(e => e.Description));
+                throw new BadRequestException(errors);
+            }
 
             await _userManger.AddToRoleAsync(user, "Student");
 
@@ -58,8 +61,10 @@ namespace Services
                 new Claim(ClaimTypes.NameIdentifier,user.Id),
                 new Claim(ClaimTypes.GivenName,user.DisplayName),
                 new Claim(ClaimTypes.Email,user.Email!),
-                new Claim(ClaimTypes.MobilePhone,user.PhoneNumber!)
             };
+
+            if (!string.IsNullOrEmpty(user.PhoneNumber))
+                claims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
 
             var roles = await _userManger.GetRolesAsync(user);
 

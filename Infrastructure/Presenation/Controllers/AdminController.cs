@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared.DTOS.Admin;
+using Shared.DTOS.Courses;
 using Shared.ErrorModels;
 
 namespace Presenation.Controllers
@@ -14,11 +15,15 @@ namespace Presenation.Controllers
     public class AdminController(IServiceManager serviceManager) : ControllerBase
     {
         [HttpGet("requests")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<InstructorRequestResponse>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<InstructorRequestResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<IEnumerable<InstructorRequestResponse>>> GetInstructorRequests([FromQuery] RequestStatus? status, CancellationToken ct)
+        public async Task<ActionResult<PaginatedResponse<InstructorRequestResponse>>> GetInstructorRequests(
+            [FromQuery] RequestStatus? status,
+            [FromQuery] int pageIndex = 1,
+            [FromQuery] int pageSize = 10,
+            CancellationToken ct = default)
         {
-            var requests = await serviceManager.AdminService.GetInstructorRequestsAsync(status, ct);
+            var requests = await serviceManager.AdminService.GetInstructorRequestsAsync(status, pageIndex, pageSize, ct);
             return Ok(requests);
         }
 

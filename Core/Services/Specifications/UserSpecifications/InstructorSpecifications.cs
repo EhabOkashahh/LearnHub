@@ -28,5 +28,13 @@ namespace Services.Specifications.UserSpecifications
         {
             IncludeExpression.Add(x => x.User);
         }
+
+        public InstructorSpecifications(RequestStatus? status, int pageIndex, int pageSize) : base(
+            x => !status.HasValue || x.Status == status.Value)
+        {
+            IncludeExpression.Add(x => x.User);
+            ApplyPagination(pageIndex, pageSize);
+            AddOrderByDesc(x => x.CreatedAt);
+        }
     }
 }

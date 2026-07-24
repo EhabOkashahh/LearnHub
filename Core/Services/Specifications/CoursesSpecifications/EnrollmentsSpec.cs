@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Contracts;
 using Domain.Entities.Courses;
+using Microsoft.EntityFrameworkCore;
 using Shared.DTOS.Courses;
 
 namespace Services.Specifications.CoursesSpecifications
@@ -26,7 +27,12 @@ namespace Services.Specifications.CoursesSpecifications
             {
                 ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
                 ApplySorting(queryParams.sort);
-                IncludeExpression.Add(x => x.Course);
+                IncludeAction.Add(q => q.Include(x => x.Course)
+                    .ThenInclude(x => x.Category)
+                    .Include(x => x.Course)
+                    .ThenInclude(x => x.Instructor)
+                    .Include(x => x.Course)
+                    .ThenInclude(x => x.CourseSections));
             }
         }
 

@@ -16,5 +16,11 @@ namespace Services.Specifications.CoursesSpecifications
         {
             AddOrderByAsc(L => L.Order);
         }
+
+        public LessonSpec(Guid lessonId, bool includeSection) : base(L => L.Id == lessonId)
+        {
+            if (includeSection)
+                IncludeExpression.Add(L => L.Section);
+        }
     }
 }

@@ -9,7 +9,6 @@ using Services.Specifications.CoursesSpecifications;
 using ServicesAbstraction.Cart;
 using Shared.DTOS.Cart;
 using RedLockNet;
-using System.Data.Common;
 
 namespace Services
 {
@@ -17,9 +16,9 @@ namespace Services
         ICartRepository _cartRepository,
         IUnitOfWork _uof,
         IMapper _mapper,
-        TimeSpan _cartTtl,
         IDistributedLockFactory _LockFactory) : ICartServices
     {
+        private static readonly TimeSpan _cartTtl = TimeSpan.FromDays(10);
         public async Task<CartResponse> GetCartAsync(string userId, CancellationToken ct)
         {
             var cart = await _cartRepository.GetCartAsync(userId);
@@ -65,7 +64,7 @@ namespace Services
                 throw new BadRequestException("You cannot add your own course to the cart");
 
             var enrollmentSpec = new EnrollmentsSpec(userId, courseId);
-            if (await _uof.GetRepository<Guid, Enrollment>().IsExsists(enrollmentSpec))
+            if (await _uof.GetRepository<Guid, Enrollment>().Exists(enrollmentSpec))
                 throw new BadRequestException("You are already enrolled in this course");
 
             cart.Items.Add(new CartItem { CourseId = courseId });

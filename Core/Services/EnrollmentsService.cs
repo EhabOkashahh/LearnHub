@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Contracts;
 using Domain.Entities.Courses;
 using Domain.Entities.Identity;
 using Domain.Exceptions.BadRequestExceptions;
 using Domain.Exceptions.NotFoundExceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Services.Specifications.CoursesSpecifications;
 using ServicesAbstraction.Courses;
@@ -60,7 +55,7 @@ namespace Services
         public async Task<bool> IsEnrolledAsync(string studentId, Guid courseId, CancellationToken ct)
         {
             var spec = new EnrollmentsSpec(studentId, courseId);
-            return await _uof.GetRepository<Guid, Enrollment>().IsExsists(spec);
+            return await _uof.GetRepository<Guid, Enrollment>().Exists(spec);
         }
     }
 }

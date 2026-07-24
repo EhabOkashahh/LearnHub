@@ -13,7 +13,9 @@ namespace Presenation.Controllers
     public class CourseSectionsController(IServiceManager serviceManager) : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourseSectionDTO>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         public async Task<ActionResult<IEnumerable<CourseSectionDTO>>> GetAll(Guid courseId, CancellationToken ct)
         {
@@ -22,7 +24,9 @@ namespace Presenation.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseSectionDTO))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         public async Task<ActionResult<CourseSectionDTO>> GetById(Guid courseId, Guid id, CancellationToken ct)

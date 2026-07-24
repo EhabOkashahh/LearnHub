@@ -6,13 +6,8 @@ using Domain.Entities.Courses.Enums;
 using Domain.Contracts;
 using Services.Specifications.CoursesSpecifications;
 using Domain.Exceptions.NotFoundExceptions;
-using Services.Specifications.CategorySpecifications;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Domain.Exceptions.BadRequestExceptions;
-using Microsoft.EntityFrameworkCore;
-
+using Services.Specifications.CategorySpecifications;
 namespace Services
 {
     public class CourseService(IUnitOfWork _uof, IMapper _mapper) : ICoursesService
@@ -37,7 +32,7 @@ namespace Services
             var courses = await _uof.GetRepository<Guid, Course>().GetAllAsync(spec, ct);
             var res = _mapper.Map<IEnumerable<CourseResponse>>(courses);
 
-            var countSpec = new CoursesSpec(userId);
+            var countSpec = new CourseSpecifiationWihtoutPagination<Guid, Course>(userId);
             var totalCount = await _uof.GetRepository<Guid, Course>().GetCountAsync(countSpec);
 
             return new PaginatedResponse<CourseResponse>(queryParams.PageIndex!.Value, queryParams.PageSize!.Value, totalCount, res);
@@ -45,7 +40,7 @@ namespace Services
 
         public async Task<CourseResponse?> GetCourseByIdAsync(Guid Id, CancellationToken ct)
         {
-            var spec = new CoursesSpec(Id,true);
+            var spec = new CoursesSpec(Id, IncludeNavigation: true);
             var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,ct);
 
             if(course is null) throw new CourseNotFoundException(Id);
@@ -57,7 +52,7 @@ namespace Services
         public async Task<Guid> CreateCourseAsync(string instructorId, CreateCourseRequest request,CancellationToken ct)
         {
             var CatSpec = new CategorySpec(request.CategoryId);
-            var categoryExists = await _uof.GetRepository<Guid,Category>().IsExsists(CatSpec);
+            var categoryExists = await _uof.GetRepository<Guid,Category>().Exists(CatSpec);
             if (!categoryExists) throw new CateoryNotFoundException(request.CategoryId);
 
 
@@ -82,7 +77,16 @@ namespace Services
 
         public async Task<CourseProgressResponse> GetProgressAsync(Guid courseId, string userId, CancellationToken ct)
         {
-            var totalLessons = await _uof.GetRepository<Guid, Lesson>().GetCountAsync(new LessonSpec());
+            var enrollmentSpec = new EnrollmentsSpec(userId, courseId);
+            if (!await _uof.GetRepository<Guid, Enrollment>().Exists(enrollmentSpec))
+                throw new BadRequestException("You are not enrolled in this course");
+
+            var courseSpec = new CoursesSpec(courseId, true);
+            var course = await _uof.GetRepository<Guid, Course>().GetAsync(courseSpec, ct);
+            if (course is null) throw new CourseNotFoundException(courseId);
+
+            var totalLessons = course.CourseSections.SelectMany(s => s.Lessons).Count();
+
             if (totalLessons == 0)
                 return new CourseProgressResponse { TotalLessons = 0, CompletedLessons = 0, Percentage = 0 };
 
@@ -126,7 +130,7 @@ namespace Services
 
         public async Task DeleteCourseAsync(Guid Id, string userId, CancellationToken ct)
         {
-            var spec = new CoursesSpec(Id,false);
+            var spec = new CoursesSpec(Id, publishedOnly: false);
             var course = await _uof.GetRepository<Guid,Course>().GetAsync(spec,ct);
 
             if(course is null) throw new CourseNotFoundException(Id);

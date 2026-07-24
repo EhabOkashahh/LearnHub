@@ -13,6 +13,8 @@ namespace Presistence.Data.Configurations.CourseConfigrations
 
             builder.HasIndex(x => new { x.StudentId, x.LessonId }).IsUnique();
 
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.Property(x => x.IsCompleted)
                 .IsRequired()
                 .HasDefaultValue(false);

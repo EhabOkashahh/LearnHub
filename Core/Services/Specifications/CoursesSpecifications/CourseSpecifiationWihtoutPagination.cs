@@ -18,5 +18,9 @@ namespace Services.Specifications.CoursesSpecifications
         {
             
         }
+
+        public CourseSpecifiationWihtoutPagination(string userId) : base(C => C.InstructorId == userId)
+        {
+        }
     }
 }

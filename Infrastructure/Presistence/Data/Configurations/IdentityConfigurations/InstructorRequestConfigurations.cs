@@ -25,9 +25,6 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
 
-            builder.Property(x => x.CreatedAt)
-                .IsRequired();
-
             builder.HasOne(x => x.User)
                 .WithMany()
                 .HasForeignKey(x => x.UserId)

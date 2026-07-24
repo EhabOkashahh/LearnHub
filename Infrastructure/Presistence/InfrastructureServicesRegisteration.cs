@@ -13,8 +13,10 @@ using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
 using Services;
 using ServicesAbstraction;
+using ServicesAbstraction.Cart;
 using ServicesAbstraction.Categories;
 using ServicesAbstraction.Courses;
+using ServicesAbstraction.Users;
 
 using StackExchange.Redis;
 
@@ -36,9 +38,12 @@ namespace Presistence
             services.AddScoped<ICategoriesService, CategoryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICartRepository,CartRepository>();
+            services.AddScoped<ICartServices,CartServices>();
             services.AddScoped<ICacheService,CacheService>();
             services.AddScoped<IDbInitializer,DbInitializer>();
             services.AddScoped<IEnrollmentsService, EnrollmentsService>();
+            services.AddScoped<IUsersService, UserService>();
+            services.AddScoped<IAdminService, AdminServices>();
             
             services.AddSingleton<IConnectionMultiplexer>((sp) => {
                 var config = sp.GetRequiredService<IConfiguration>();

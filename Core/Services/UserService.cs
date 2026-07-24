@@ -38,7 +38,7 @@ namespace Services
         public async Task RequestInstructorAsync(string userId, CancellationToken ct)
         {
             var spec = new InstructorSpecifications(userId);
-            var UserRequest = (await _uof.GetRepository<Guid,InstructorRequest>().GetAllAsync(spec,ct)).FirstOrDefault();
+            var UserRequest = await _uof.GetRepository<Guid,InstructorRequest>().GetAsync(spec,ct);
 
             if(UserRequest is not null)
             {

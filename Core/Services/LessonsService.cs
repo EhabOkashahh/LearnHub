@@ -64,6 +64,8 @@ namespace Services
 
         public async Task CompleteAsync(Guid lessonId, string studentId, CancellationToken ct)
         {
+            await VerifyEnrollmentAsync(lessonId, studentId, ct);
+
             var repo = _uof.GetRepository<Guid, LessonProgress>();
             var existing = await repo.GetAsync(new LessonProgressSpec(lessonId, studentId), ct);
 
@@ -90,6 +92,8 @@ namespace Services
 
         public async Task UncompleteAsync(Guid lessonId, string studentId, CancellationToken ct)
         {
+            await VerifyEnrollmentAsync(lessonId, studentId, ct);
+
             var repo = _uof.GetRepository<Guid, LessonProgress>();
             var existing = await repo.GetAsync(new LessonProgressSpec(lessonId, studentId), ct);
 
@@ -101,11 +105,29 @@ namespace Services
             await _uof.SaveChangesAsync(ct);
         }
 
+        private async Task VerifyEnrollmentAsync(Guid lessonId, string studentId, CancellationToken ct)
+        {
+            var lessonSpec = new LessonSpec(lessonId, includeSection: true);
+            var lesson = await _uof.GetRepository<Guid, Lesson>().GetAsync(lessonSpec, ct);
+            if (lesson is null)
+                throw new NotFoundException($"Lesson with id: {lessonId} was not found");
+
+            var courseId = lesson.Section.CourseId;
+
+            var enrollmentSpec = new EnrollmentsSpec(studentId, courseId);
+            if (!await _uof.GetRepository<Guid, Enrollment>().Exists(enrollmentSpec))
+                throw new BadRequestException("You are not enrolled in this course");
+        }
+
         private async Task VerifySectionOwnership(Guid courseId, Guid sectionId, string userId, CancellationToken ct)
         {
             var courseSpec = new CoursesSpec(courseId, userId);
             var course = await _uof.GetRepository<Guid, Course>().GetAsync(courseSpec, ct);
             if (course is null) throw new NotFoundException($"Course with id: {courseId} was not found");
+
+            var sectionSpec = new CourseSectionSpec(courseId, sectionId);
+            var section = await _uof.GetRepository<Guid, CourseSection>().GetAsync(sectionSpec, ct);
+            if (section is null) throw new NotFoundException($"Section with id: {sectionId} was not found in course: {courseId}");
         }
     }
 }

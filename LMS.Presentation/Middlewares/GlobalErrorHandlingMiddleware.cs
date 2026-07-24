@@ -30,6 +30,7 @@ namespace LMS.Presentation.Middlewares
                     NotFoundException => StatusCodes.Status404NotFound,
                     BadRequestException => StatusCodes.Status400BadRequest,
                     UnAuthorizedException => StatusCodes.Status401Unauthorized,
+                    UnauthorizedAccessException => StatusCodes.Status403Forbidden,
                     _ => StatusCodes.Status500InternalServerError
                 };
 

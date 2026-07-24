@@ -2,13 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Domain.Contracts;
-using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
-using RedLockNet;
 using ServicesAbstraction;
 using ServicesAbstraction.Auth;
 using ServicesAbstraction.Cart;
@@ -19,24 +12,26 @@ using ServicesAbstraction.Users;
 namespace Services
 {
     public class ServiceManager(
-        IUnitOfWork _uof,
-         IMapper mapper,
-         ICartRepository cartRepository,
-         IDistributedCache distributedCache,
-         UserManager<AppUser> _userManager,
-          IOptions<JwtOptions> _jwtOptions,
-          IAuthService _auth,
-          IDistributedLockFactory _lockFactory) : IServiceManager 
+        ICoursesService courseService,
+        ICourseSectionsService courseSectionsService,
+        ILessonsService lessonsService,
+        ICategoriesService categoryService,
+        ICartServices cartServices,
+        ICacheService cacheService,
+        IAuthService authService,
+        IUsersService userService,
+        IAdminService adminService,
+        IEnrollmentsService enrollmentsService) : IServiceManager 
     {
-        public ICoursesService CourseService { get; } = new CourseService(_uof, mapper);
-        public ICourseSectionsService CourseSectionsService { get; } = new CourseSectionsService(_uof, mapper);
-        public ILessonsService LessonsService { get; } = new LessonsService(_uof, mapper);
-        public ICategoriesService CategoryService { get; } = new CategoryService(_uof, mapper);
-        public ICartServices CartServices { get; } = new CartServices(cartRepository, _uof, mapper, TimeSpan.FromDays(10),_lockFactory);
-        public ICacheService CacheService { get; } = new CacheService(distributedCache);
-        public IAuthService AuthService { get; } = new AuthService(_userManager, mapper, _jwtOptions);
-        public IUsersService UserService { get; } = new UserService(_userManager, mapper, _uof, _auth);
-        public IAdminService AdminService { get; } = new AdminServices(_uof, mapper, _userManager);
-        public IEnrollmentsService EnrollmentsService { get; } = new EnrollmentsService(_uof, _userManager, mapper);
+        public ICoursesService CourseService { get; } = courseService;
+        public ICourseSectionsService CourseSectionsService { get; } = courseSectionsService;
+        public ILessonsService LessonsService { get; } = lessonsService;
+        public ICategoriesService CategoryService { get; } = categoryService;
+        public ICartServices CartServices { get; } = cartServices;
+        public ICacheService CacheService { get; } = cacheService;
+        public IAuthService AuthService { get; } = authService;
+        public IUsersService UserService { get; } = userService;
+        public IAdminService AdminService { get; } = adminService;
+        public IEnrollmentsService EnrollmentsService { get; } = enrollmentsService;
     }
 }

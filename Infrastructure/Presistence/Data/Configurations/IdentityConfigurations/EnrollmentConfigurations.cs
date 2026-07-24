@@ -11,9 +11,6 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
             builder.HasKey(x => x.Id);
             builder.HasIndex(x => new { x.StudentId, x.CourseId }).IsUnique();
 
-            builder.Property(x => x.ProgressPercentage)
-                .HasDefaultValue(0.0);
-
             builder.HasOne(x => x.Student)
                 .WithMany()
                 .HasForeignKey(x => x.StudentId)
