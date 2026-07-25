@@ -7,9 +7,9 @@ using Shared.DTOS.Courses;
 
 namespace Services.Specifications.CoursesSpecifications
 {
-    public class CourseSpecifiationWihtoutPagination<Tkey, TEntity> : Specifications<Guid, Course>
+    public class CourseSpecificationWithoutPagination<Tkey, TEntity> : Specifications<Guid, Course>
     {
-        public CourseSpecifiationWihtoutPagination(CourseQueryParams queryParams) : base(C => 
+        public CourseSpecificationWithoutPagination(CourseQueryParams queryParams) : base(C => 
             (!queryParams.Level.HasValue || C.Level == queryParams.Level) 
             &&
             (!queryParams.CategpryId.HasValue || C.CategoryId == queryParams.CategpryId)
@@ -19,7 +19,7 @@ namespace Services.Specifications.CoursesSpecifications
             
         }
 
-        public CourseSpecifiationWihtoutPagination(string userId) : base(C => C.InstructorId == userId)
+        public CourseSpecificationWithoutPagination(string userId) : base(C => C.InstructorId == userId)
         {
         }
     }

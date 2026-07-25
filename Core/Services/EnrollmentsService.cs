@@ -52,7 +52,7 @@ namespace Services
             return new PaginatedResponse<CourseResponse>(pageIndex: queryParams.PageIndex!.Value,pageSize: queryParams.PageSize!.Value,totalCount:totalCount,data:courses);
         }
 
-        public async Task<bool> IsEnrolledAsync(string studentId, Guid courseId, CancellationToken ct)
+        private async Task<bool> IsEnrolledAsync(string studentId, Guid courseId, CancellationToken ct)
         {
             var spec = new EnrollmentsSpec(studentId, courseId);
             return await _uof.GetRepository<Guid, Enrollment>().Exists(spec);

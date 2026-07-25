@@ -22,7 +22,7 @@ namespace Services
         {
             var spec = new CategorySpec(Id);
             var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, ct);
-            if (category is null) throw new CateoryNotFoundException(Id);
+            if (category is null) throw new CategoryNotFoundException(Id);
 
             return _mapper.Map<CategoryResponse>(category);
         }
@@ -38,7 +38,7 @@ namespace Services
         {
             var spec = new CategorySpec(Id);
             var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, ct);
-            if (category is null) throw new CateoryNotFoundException(Id);
+            if (category is null) throw new CategoryNotFoundException(Id);
 
             _mapper.Map(request, category);
             category.UpdatedAt = DateTime.UtcNow;
@@ -49,7 +49,7 @@ namespace Services
         {
             var spec = new CategorySpec(Id);
             var category = await _uof.GetRepository<Guid, Category>().GetAsync(spec, ct);
-            if (category is null) throw new CateoryNotFoundException(Id);
+            if (category is null) throw new CategoryNotFoundException(Id);
 
             _uof.GetRepository<Guid, Category>().Delete(Id);
             await _uof.SaveChangesAsync(ct);

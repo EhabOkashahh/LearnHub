@@ -9,7 +9,7 @@ namespace Shared.ErrorModels
 {
     public class ValidationErrorResponse : ErrorResponse
     {
-        public IEnumerable<VlidationMessage> Errors { get; set; } = null!;
+        public IEnumerable<ValidationMessage> Errors { get; set; } = null!;
         public ValidationErrorResponse()
         {
             StatusCode = StatusCodes.Status400BadRequest;
@@ -17,7 +17,7 @@ namespace Shared.ErrorModels
         }
     }
 
-    public class VlidationMessage 
+    public class ValidationMessage 
     {
         public string Field { get; set; } = null!;
         public IEnumerable<string> Errors { get; set; } = null!;

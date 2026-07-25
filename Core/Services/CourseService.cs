@@ -19,7 +19,7 @@ namespace Services
             var res = _mapper.Map<IEnumerable<CourseResponse>>(courses);
             
 
-            var CountSpec = new CourseSpecifiationWihtoutPagination<Guid,Course>(queryParams);
+            var CountSpec = new CourseSpecificationWithoutPagination<Guid,Course>(queryParams);
             var totalCount = await _uof.GetRepository<Guid,Course>().GetCountAsync(CountSpec);
 
             return new PaginatedResponse<CourseResponse>(queryParams.PageIndex!.Value, queryParams.PageSize!.Value, totalCount,res);
@@ -32,7 +32,7 @@ namespace Services
             var courses = await _uof.GetRepository<Guid, Course>().GetAllAsync(spec, ct);
             var res = _mapper.Map<IEnumerable<CourseResponse>>(courses);
 
-            var countSpec = new CourseSpecifiationWihtoutPagination<Guid, Course>(userId);
+            var countSpec = new CourseSpecificationWithoutPagination<Guid, Course>(userId);
             var totalCount = await _uof.GetRepository<Guid, Course>().GetCountAsync(countSpec);
 
             return new PaginatedResponse<CourseResponse>(queryParams.PageIndex!.Value, queryParams.PageSize!.Value, totalCount, res);
@@ -53,7 +53,7 @@ namespace Services
         {
             var CatSpec = new CategorySpec(request.CategoryId);
             var categoryExists = await _uof.GetRepository<Guid,Category>().Exists(CatSpec);
-            if (!categoryExists) throw new CateoryNotFoundException(request.CategoryId);
+            if (!categoryExists) throw new CategoryNotFoundException(request.CategoryId);
 
 
             var course = _mapper.Map<Course>(request);

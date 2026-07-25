@@ -93,7 +93,7 @@ namespace LMS.Presentation.Extentions
                             cf.InvalidModelStateResponseFactory = (actionContext) =>
                             {
                                 var Errors = actionContext.ModelState.Where(ms => ms.Value!.Errors.Any())
-                                                                    .Select(m => new VlidationMessage
+                                                                    .Select(m => new ValidationMessage
                                                                     {
                                                                         Field = m.Key,
                                                                         Errors = m.Value!.Errors.Select(e => e.ErrorMessage)
