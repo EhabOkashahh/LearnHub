@@ -23,6 +23,8 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
             builder.Property(x => x.ProfilePictureUrl)
                 .HasMaxLength(500);
 
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
 

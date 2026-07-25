@@ -9,5 +9,7 @@ namespace Domain.Entities.Identity
         public string? Bio { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsDeleted { get; set; } = false;
+        public DateTime DeletedAt { get; set; }
     }
 }

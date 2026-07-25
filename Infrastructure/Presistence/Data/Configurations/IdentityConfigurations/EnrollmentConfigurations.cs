@@ -16,6 +16,8 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
                 .HasForeignKey(x => x.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.HasOne(x => x.Course)
                 .WithMany(x => x.Enrollments)
                 .HasForeignKey(x => x.CourseId)
