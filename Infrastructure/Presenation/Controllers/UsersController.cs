@@ -36,7 +36,7 @@ namespace Presenation.Controllers
             return Ok(user);
         }
 
-        [HttpPut("me")]
+        [HttpPatch("me")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponse))]

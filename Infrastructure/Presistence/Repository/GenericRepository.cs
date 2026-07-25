@@ -28,11 +28,6 @@ namespace Presistence.Repository
         {
             return await SpecificationsEvaluator.GetQuery(InputQuery, spec).CountAsync();
         }
-        public void Update(TEntity entity)
-        {
-            _context.Update(entity);
-        }
-
         public void Delete(Tkey key)
         {
             var entity = _context.Set<TEntity>().Find(key);
