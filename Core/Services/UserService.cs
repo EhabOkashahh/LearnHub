@@ -16,7 +16,8 @@ namespace Services
         UserManager<AppUser> _userManager,
         IMapper _mapper,
         IUnitOfWork _uof,
-        IAuthService _auth
+        IAuthService _auth,
+        ICartRepository _cartRepository
     ) : IUsersService
     {
         public async Task<UserResponse> GetByIdAsync(string id, CancellationToken ct)
@@ -64,6 +65,18 @@ namespace Services
 
             var token = await _auth.GenerateTokenAsync(user);
             return new TokenResponse { Token = token };
+        }
+
+        public async Task DeleteUserAsync(string userId, CancellationToken ct)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) throw new UserNotFoundException(userId);
+
+            user.IsDeleted = true;
+            user.DeletedAt = DateTime.UtcNow;
+
+            await _userManager.UpdateAsync(user);
+            await _cartRepository.DeleteCart(userId);
         }
     }
 }

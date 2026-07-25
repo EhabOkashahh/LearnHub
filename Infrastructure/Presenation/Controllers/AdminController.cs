@@ -46,5 +46,15 @@ namespace Presenation.Controllers
             await serviceManager.AdminService.RejectRequestAsync(id, ct);
             return NoContent();
         }
+
+        [HttpDelete("users/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> DeleteUser(string id, CancellationToken ct)
+        {
+            await serviceManager.UserService.DeleteUserAsync(id, ct);
+            return NoContent();
+        }
     }
 }

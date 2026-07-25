@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Presistence.Data;
 using Presistence.Data.Contexts;
 using Presistence.Data.Seeding;
+using Presistence.Interceptors;
 using Presistence.Repository;
 using RedLockNet;
 using RedLockNet.SERedis;
@@ -28,6 +29,7 @@ namespace Presistence
         {
             services.AddDbContext<AppDbContext>((sp,options) =>
             {
+                options.AddInterceptors(sp.GetRequiredService<SoftDeleteInterceptor>());
                 var config = sp.GetRequiredService<IConfiguration>();
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
@@ -44,6 +46,7 @@ namespace Presistence
             services.AddScoped<IEnrollmentsService, EnrollmentsService>();
             services.AddScoped<IUsersService, UserService>();
             services.AddScoped<IAdminService, AdminServices>();
+            services.AddScoped<SoftDeleteInterceptor>();
             
             services.AddSingleton<IConnectionMultiplexer>((sp) => {
                 var config = sp.GetRequiredService<IConfiguration>();
