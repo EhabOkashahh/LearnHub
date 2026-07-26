@@ -9,21 +9,21 @@ namespace Services.Specifications.CoursesSpecifications
     {
         public CoursesSpec() : base(null)
         {
-            ApplyIncludeExpression();
+            ApplyListingIncludes();
         }
         public CoursesSpec(Guid id, bool IncludeNavigation = false, bool publishedOnly = true) 
             : base(C => C.Id == id && (!publishedOnly || C.Status == CourseStatus.Published))
         {
-            if(IncludeNavigation) ApplyIncludeExpression();
+            if(IncludeNavigation) ApplyDetailIncludes();
         }
         public CoursesSpec(string userId) : base(C => C.InstructorId == userId)
         {
-            ApplyIncludeExpression();
+            ApplyListingIncludes();
         }
 
         public CoursesSpec(Guid id,string userId) : base(C => C.Id == id && C.Instructor.Id == userId)
         {
-            ApplyIncludeExpression();
+            ApplyListingIncludes();
         }
 
 
@@ -38,7 +38,7 @@ namespace Services.Specifications.CoursesSpecifications
         {
             ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
             ApplySorting(queryParams.sort);
-            ApplyIncludeExpression();
+            ApplyListingIncludes();
         }
 
         public CoursesSpec(CourseQueryParams queryParams, string instructorId)
@@ -55,7 +55,7 @@ namespace Services.Specifications.CoursesSpecifications
 
             ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
             ApplySorting(queryParams.sort);
-            ApplyIncludeExpression();
+            ApplyListingIncludes();
         }
 
 
@@ -88,11 +88,15 @@ namespace Services.Specifications.CoursesSpecifications
                 AddOrderByAsc(C => C.TotalDurationMinutes);
             }
         }
-        private void ApplyIncludeExpression()
+        private void ApplyListingIncludes()
         {
             AddInclude(q => q.Include(x => x.Category)
-                            .Include(x => x.Instructor)
-                            .Include(x => x.CourseSections)
+                            .Include(x => x.Instructor));
+        }
+        private void ApplyDetailIncludes()
+        {
+            ApplyListingIncludes();
+            AddInclude(q => q.Include(x => x.CourseSections)
                             .ThenInclude(x => x.Lessons));
         }
     }

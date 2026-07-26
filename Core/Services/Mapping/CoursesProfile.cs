@@ -13,7 +13,7 @@ namespace Services.Mapping
                                                .ForMember(C => C.CategoryName , O => O.MapFrom(S => S.Category.Name))
                                                .ForMember(C => C.Status, O => O.MapFrom(S => S.Status.ToString()))
                                                .ForMember(C => C.InstructorName, O => O.MapFrom(S => S.Instructor.DisplayName))
-                                               .ForMember(C => C.Sections, o => o.MapFrom(d => d.CourseSections))
+                                               .ForMember(C => C.Sections, o => { o.Condition(d => d.CourseSections != null); o.MapFrom(d => d.CourseSections); })
                                                .ReverseMap();
 
             CreateMap<CourseSection, CourseSectionDTO>().ReverseMap();

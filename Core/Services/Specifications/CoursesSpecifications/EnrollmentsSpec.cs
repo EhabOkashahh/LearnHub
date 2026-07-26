@@ -27,7 +27,7 @@ namespace Services.Specifications.CoursesSpecifications
             {
                 ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
                 ApplySorting(queryParams.sort);
-                IncludeAction.Add(q => q.Include(x => x.Course)
+                AddInclude(q => q.Include(x => x.Course)
                     .ThenInclude(x => x.Category)
                     .Include(x => x.Course)
                     .ThenInclude(x => x.Instructor)

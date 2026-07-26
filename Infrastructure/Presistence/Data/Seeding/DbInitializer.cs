@@ -46,7 +46,7 @@ namespace Presistence.Data.Seeding
                         await _roleManager.CreateAsync(new IdentityRole(roleName));
             }
 
-            if (!_context.Users.Any())
+            if (!await _context.Users.AnyAsync())
             {
                 var SuperAdmin = new AppUser
                 {
