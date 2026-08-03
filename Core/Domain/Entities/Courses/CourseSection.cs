@@ -10,6 +10,7 @@ namespace Domain.Entities.Courses
 
         public Course Course { get; set; } = null!;
 
+        [CascadeSoftDelete]
         public ICollection<Lesson> Lessons { get; set; } = [];
     }
 }

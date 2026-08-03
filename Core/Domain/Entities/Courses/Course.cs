@@ -17,6 +17,7 @@ namespace Domain.Entities.Courses
 
 
 
+        [CascadeSoftDelete]
         public ICollection<Enrollment> Enrollments { get; set; } = null!;
         public Category Category { get; set; } = null!;
 
@@ -24,6 +25,8 @@ namespace Domain.Entities.Courses
         public AppUser Instructor { get; set; } = null!;      
 
         private List<CourseSection> _courseSections = [];
+        
+        [CascadeSoftDelete]
         public IReadOnlyCollection<CourseSection> CourseSections => _courseSections.AsReadOnly();
 
     }

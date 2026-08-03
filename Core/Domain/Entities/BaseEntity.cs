@@ -1,6 +1,6 @@
 namespace Domain.Entities
 {
-    public class BaseEntity<TKey>
+    public class BaseEntity<TKey> : ISoftDeletable
     {
         public TKey Id { get; init; } = default!;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

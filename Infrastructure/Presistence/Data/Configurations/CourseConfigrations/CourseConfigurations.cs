@@ -48,7 +48,7 @@ namespace Presistence.Data.Configurations.CourseConfigrations
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.HasOne(x => x.Instructor)
-                .WithMany()
+                .WithMany(x => x.Courses)
                 .HasForeignKey(x => x.InstructorId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

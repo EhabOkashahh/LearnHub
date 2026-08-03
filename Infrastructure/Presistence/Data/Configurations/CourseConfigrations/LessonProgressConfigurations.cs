@@ -20,12 +20,12 @@ namespace Presistence.Data.Configurations.CourseConfigrations
                 .HasDefaultValue(false);
 
             builder.HasOne(x => x.Student)
-                .WithMany()
+                .WithMany(x => x.LessonProgresses)
                 .HasForeignKey(x => x.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Lesson)
-                .WithMany()
+                .WithMany(x => x.ProgressRecords)
                 .HasForeignKey(x => x.LessonId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

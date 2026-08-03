@@ -26,7 +26,7 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
                 .IsRequired();
 
             builder.HasOne(x => x.User)
-                .WithMany()
+                .WithMany(x => x.InstructorRequests)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 

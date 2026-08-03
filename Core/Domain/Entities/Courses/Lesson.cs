@@ -11,5 +11,7 @@ namespace Domain.Entities.Courses
         public Guid SectionId { get; set; }
         public CourseSection Section { get; set; } = null!;
 
+        [CascadeSoftDelete]
+        public ICollection<LessonProgress> ProgressRecords { get; set; } = [];
     }
 }

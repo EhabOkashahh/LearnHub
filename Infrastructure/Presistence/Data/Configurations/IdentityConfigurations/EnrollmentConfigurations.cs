@@ -12,7 +12,7 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
             builder.HasIndex(x => new { x.StudentId, x.CourseId }).IsUnique();
 
             builder.HasOne(x => x.Student)
-                .WithMany()
+                .WithMany(x => x.Enrollments)
                 .HasForeignKey(x => x.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
