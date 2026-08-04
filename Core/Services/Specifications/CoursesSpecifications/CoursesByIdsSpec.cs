@@ -8,8 +8,7 @@ namespace Services.Specifications.CoursesSpecifications
     {
         public CoursesByIdsSpec(IEnumerable<Guid> ids) : base(c => ids.Contains(c.Id))
         {
-            IncludeExpression.Add(x => x.Category);
-            IncludeExpression.Add(x => x.Instructor);
+            AddInclude(q => q.Include(x => x.Category).Include(x => x.Instructor));
         }
     }
 }

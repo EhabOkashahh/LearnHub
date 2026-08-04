@@ -1,4 +1,5 @@
 using Domain.Entities.Courses;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services.Specifications.CoursesSpecifications
 {
@@ -20,7 +21,7 @@ namespace Services.Specifications.CoursesSpecifications
         public LessonSpec(Guid lessonId, bool includeSection) : base(L => L.Id == lessonId)
         {
             if (includeSection)
-                IncludeExpression.Add(L => L.Section);
+                AddInclude(q => q.Include(L => L.Section));
         }
     }
 }

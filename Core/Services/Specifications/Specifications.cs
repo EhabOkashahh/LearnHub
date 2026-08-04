@@ -14,8 +14,6 @@ namespace Services.Specifications
         {
             Criteria = Expression;
         }
-        public List<Expression<Func<TEntity, object>>> IncludeExpression { get; set; } = new List<Expression<Func<TEntity, object>>>();
-
         public List<Func<IQueryable<TEntity>,IQueryable<TEntity>>> IncludeAction { get; set; } = new();
         public Expression<Func<TEntity, bool>>? Criteria { get; set; }
         public Expression<Func<TEntity, object>>? OrderByAsc { get; set; }

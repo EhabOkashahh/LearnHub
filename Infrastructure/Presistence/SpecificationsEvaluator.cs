@@ -42,13 +42,6 @@ namespace Presistence
                 query = query.Skip(spec.Skip).Take(spec.Take);
             }
 
-
-
-            if(spec.IncludeExpression.Count > 0)
-            {
-                query = spec.IncludeExpression.Aggregate(query, (current, includeExpession) => current.Include(includeExpession));
-            }
-
             foreach(var action in spec.IncludeAction)
             {
                 query = action(query);
