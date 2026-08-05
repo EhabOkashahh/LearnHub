@@ -9,6 +9,7 @@ using Domain.Entities.Courses;
 using Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using StackExchange.Redis;
 
 namespace Presistence.Interceptors
 {
@@ -37,7 +38,6 @@ namespace Presistence.Interceptors
             
             return await base.SavingChangesAsync(eventData, result, cancellationToken);
         }
-
         private async Task CascadeLevelAsync(DbContext context, Type type, Dictionary<Type, HashSet<object>> visited, List<Type> nextLevel, CancellationToken cancellationToken)
         {
             var entityType = context.Model.FindEntityType(type)!;
@@ -72,6 +72,9 @@ namespace Presistence.Interceptors
 
                 var result = task.GetType().GetProperty("Result")!.GetValue(task);
 
+                var count = (int)typeof(ICollection).GetProperty(nameof(ICollection.Count))!.GetValue(result)!;
+                if(count == 0) continue;
+
                 foreach (object child in (IEnumerable)result!)     
                 {
                     if (child is ISoftDeletable sd)
@@ -93,11 +96,11 @@ namespace Presistence.Interceptors
                 if(visited[ChildType].Count > 0 && !nextLevel.Contains(ChildType)) nextLevel.Add(ChildType);
             }
         }
-
+        // where childId in (1,2,3,4)
         private static LambdaExpression IdIn(Type childType, Type keyType, IEnumerable<object> ids, string fk)
         {
             var param = Expression.Parameter(childType, "p"); 
-            var prop = Expression.Property(param, fk);
+            var prop = Expression.Property(param, fk); 
             var containsMethod = typeof(Enumerable).GetMethods()
                 .Single(m => m.Name == nameof(Enumerable.Contains) && m.IsGenericMethod && m.GetParameters().Length == 2)
                 .MakeGenericMethod(keyType);
