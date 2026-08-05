@@ -1,4 +1,4 @@
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Domain.Entities.Identity;
 
 namespace Services.Specifications.UserSpecifications

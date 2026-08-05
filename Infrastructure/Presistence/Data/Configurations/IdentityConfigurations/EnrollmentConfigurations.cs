@@ -21,7 +21,7 @@ namespace Presistence.Data.Configurations.IdentityConfigurations
             builder.HasOne(x => x.Course)
                 .WithMany(x => x.Enrollments)
                 .HasForeignKey(x => x.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -1,4 +1,4 @@
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

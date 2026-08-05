@@ -1,4 +1,4 @@
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Shared.DTOS.Admin;
 using Shared.DTOS.Courses;
 

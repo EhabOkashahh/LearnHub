@@ -1,4 +1,4 @@
-namespace Domain.Entities.Courses.Enums
+namespace Domain.Entities.Enums
 {
     public enum CourseStatus
     {

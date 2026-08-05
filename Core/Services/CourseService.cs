@@ -2,7 +2,7 @@ using AutoMapper;
 using ServicesAbstraction.Courses;
 using Shared.DTOS.Courses;
 using Domain.Entities.Courses;
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Domain.Contracts;
 using Services.Specifications.CoursesSpecifications;
 using Domain.Exceptions.NotFoundExceptions;

@@ -23,7 +23,7 @@ namespace Presistence.Data.Configurations.CourseConfigrations
         builder.HasOne(x => x.Course)
             .WithMany(x => x.CourseSections)
             .HasForeignKey(x => x.CourseId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasQueryFilter(x => !x.IsDeleted);
         }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 

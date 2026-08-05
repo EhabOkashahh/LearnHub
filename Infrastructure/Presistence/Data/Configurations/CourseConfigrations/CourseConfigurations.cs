@@ -1,5 +1,5 @@
 using Domain.Entities.Courses;
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

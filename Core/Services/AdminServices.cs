@@ -1,6 +1,6 @@
 using AutoMapper;
 using Domain.Contracts;
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Domain.Entities.Identity;
 using Domain.Exceptions.BadRequestExceptions;
 using Domain.Exceptions.NotFoundExceptions;

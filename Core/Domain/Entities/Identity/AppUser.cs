@@ -1,4 +1,5 @@
 using Domain.Entities.Courses;
+using Domain.Entities.Orders;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities.Identity
@@ -24,5 +25,8 @@ namespace Domain.Entities.Identity
 
         [CascadeSoftDelete]
         public ICollection<InstructorRequest> InstructorRequests { get; set; } = [];
+
+        [CascadeSoftDelete]
+        public ICollection<Order> Orders { get; set; } = [];
     }
 }

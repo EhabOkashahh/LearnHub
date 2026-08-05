@@ -31,7 +31,7 @@ namespace Presistence.Data.Configurations.CourseConfigrations
             builder.HasOne(x => x.Section)
                 .WithMany(x => x.Lessons)
                 .HasForeignKey(x => x.SectionId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

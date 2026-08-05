@@ -22,12 +22,12 @@ namespace Presistence.Data.Configurations.CourseConfigrations
             builder.HasOne(x => x.Student)
                 .WithMany(x => x.LessonProgresses)
                 .HasForeignKey(x => x.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Lesson)
                 .WithMany(x => x.ProgressRecords)
                 .HasForeignKey(x => x.LessonId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

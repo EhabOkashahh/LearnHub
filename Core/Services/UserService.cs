@@ -3,7 +3,7 @@ using Domain.Contracts;
 using Domain.Entities.Identity;
 using Domain.Exceptions.NotFoundExceptions;
 using Microsoft.AspNetCore.Identity;
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Services.Specifications.UserSpecifications;
 using ServicesAbstraction.Auth;
 using ServicesAbstraction.Users;

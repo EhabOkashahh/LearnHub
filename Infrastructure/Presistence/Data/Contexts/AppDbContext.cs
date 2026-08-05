@@ -1,5 +1,6 @@
 using Domain.Entities.Courses;
 using Domain.Entities.Identity;
+using Domain.Entities.Orders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;    
@@ -16,6 +17,9 @@ namespace Presistence.Data.Contexts
 
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<InstructorRequest> InstructorRequests { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItems> OrderItems { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -2,7 +2,7 @@ using AutoMapper;
 using Domain.Contracts;
 using Domain.Entities.Cart;
 using Domain.Entities.Courses;
-using Domain.Entities.Courses.Enums;
+using Domain.Entities.Enums;
 using Domain.Exceptions.BadRequestExceptions;
 using Domain.Exceptions.NotFoundExceptions;
 using Services.Specifications.CoursesSpecifications;
