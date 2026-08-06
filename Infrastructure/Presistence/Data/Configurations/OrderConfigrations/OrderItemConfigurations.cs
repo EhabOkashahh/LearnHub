@@ -27,6 +27,9 @@ namespace Presistence.Data.Configurations.OrderConfigrations
             builder.Property(x => x.Price)
                 .HasColumnType("decimal(18,2)");
 
+            builder.Property(x => x.OriginalPrice)
+                .HasColumnType("decimal(18,2)");
+
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
 

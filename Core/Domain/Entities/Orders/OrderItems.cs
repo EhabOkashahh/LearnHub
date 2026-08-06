@@ -11,6 +11,7 @@ namespace Domain.Entities.Orders
     {
         public string CourseTitle { get; set; } = null!;
         public string ThumbnailUrl { get; set; } = null!;
+        public decimal OriginalPrice { get; set; }
         public decimal Price { get; set; }
 
         public Guid OrderId { get; set; }

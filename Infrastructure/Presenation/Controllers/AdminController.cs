@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
+using Shared.DTOS;
 using Shared.DTOS.Admin;
 using Shared.DTOS.Courses;
 using Shared.ErrorModels;

@@ -7,6 +7,7 @@ using Domain.Exceptions.NotFoundExceptions;
 using Microsoft.AspNetCore.Identity;
 using Services.Specifications.UserSpecifications;
 using ServicesAbstraction.Users;
+using Shared.DTOS;
 using Shared.DTOS.Admin;
 using Shared.DTOS.Courses;
 

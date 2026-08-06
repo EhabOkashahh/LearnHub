@@ -15,6 +15,8 @@ namespace Shared.DTOS.Courses
 
         public int TotalDurationMinutes { get; set; }
         public decimal Price { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public DateTime DiscountEndsAt { get; set; }
         public string Level { get; set; } = null!;
         public string Status { get; set; } = null!;
 
@@ -25,6 +27,6 @@ namespace Shared.DTOS.Courses
         public string InstructorId { get; set; } = null!;
         public string InstructorName { get; set; } = null!;
 
-        public ICollection<CourseSectionDTO> Sections { get; set; } = new List<CourseSectionDTO>();
+        public ICollection<CourseSectionDTO> CourseSections { get; set; } = new List<CourseSectionDTO>();
     }
 }

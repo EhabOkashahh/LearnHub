@@ -7,6 +7,7 @@ using Domain.Exceptions.NotFoundExceptions;
 using Microsoft.AspNetCore.Identity;
 using Services.Specifications.CoursesSpecifications;
 using ServicesAbstraction.Courses;
+using Shared.DTOS;
 using Shared.DTOS.Courses;
 
 namespace Services

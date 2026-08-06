@@ -16,6 +16,11 @@ namespace Shared.DTOS.Courses
         [Range(0, 99999.99)]
         public decimal Price { get; set; }
 
+        [Range(0, 99999.99)]
+        public decimal? DiscountPrice { get; set; }
+
+        public DateTime? DiscountEndsAt { get; set; }
+
         [Required]
         public string Level { get; set; } = null!;
 

@@ -34,6 +34,15 @@ namespace Presistence.Data.Configurations.CourseConfigrations
                 .HasMaxLength(20)
                 .HasDefaultValue(CourseStatus.Draft);
 
+            builder.Property(x => x.Price)
+                .HasColumnType("decimal(18,2)");
+
+            builder.Property(x => x.DiscountPrice)
+                .HasColumnType("decimal(18,2)");
+
+            builder.Property(x => x.DiscountEndsAt)
+                .IsRequired();
+
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
 

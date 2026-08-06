@@ -13,6 +13,7 @@ namespace Services.Mapping
         public AdminProfile()
         {
             CreateMap<InstructorRequest, InstructorRequestResponse>()
+                .ForMember(d => d.RequestedAt, o => o.MapFrom(s => s.CreatedAt))
                 .ForMember(d => d.ReviewedAt, o => o.MapFrom(s => s.UpdatedAt))
                 .ReverseMap();
         }

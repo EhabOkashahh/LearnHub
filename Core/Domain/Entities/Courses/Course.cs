@@ -12,7 +12,12 @@ namespace Domain.Entities.Courses
         public int TotalDurationMinutes { get; set; }
         public CourseLevel Level { get; set; }
         public decimal Price { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public DateTime DiscountEndsAt { get; set; } = DateTime.UtcNow;
         public Guid CategoryId { get; set; }
+
+        public decimal GetEffectivePrice(DateTime now) =>
+            DiscountPrice > 0 && DiscountEndsAt > now ? DiscountPrice : Price;
 
 
 

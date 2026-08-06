@@ -11,6 +11,10 @@ namespace Services.Specifications.CoursesSpecifications
         {
             ApplyListingIncludes();
         }
+        public CoursesSpec(IEnumerable<Guid> Coursesids) : base(c => Coursesids.Contains(c.Id) && c.Status == CourseStatus.Published)
+        {
+            
+        }
         public CoursesSpec(Guid id, bool IncludeNavigation = false, bool publishedOnly = true) 
             : base(C => C.Id == id && (!publishedOnly || C.Status == CourseStatus.Published))
         {

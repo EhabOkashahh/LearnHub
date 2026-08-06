@@ -8,6 +8,7 @@ using Services.Specifications.CoursesSpecifications;
 using Domain.Exceptions.NotFoundExceptions;
 using Domain.Exceptions.BadRequestExceptions;
 using Services.Specifications.CategorySpecifications;
+using Shared.DTOS;
 namespace Services
 {
     public class CourseService(IUnitOfWork _uof, IMapper _mapper) : ICoursesService
@@ -55,8 +56,16 @@ namespace Services
             var categoryExists = await _uof.GetRepository<Guid,Category>().Exists(CatSpec);
             if (!categoryExists) throw new CategoryNotFoundException(request.CategoryId);
 
+            if (request.DiscountPrice is > 0)
+            {
+                if (request.DiscountPrice >= request.Price)
+                    throw new BadRequestException("Discount price must be less than the course price");
+                if (!request.DiscountEndsAt.HasValue || request.DiscountEndsAt <= DateTime.UtcNow)
+                    throw new BadRequestException("Discount end time is required and must be in the future");
+            }
 
             var course = _mapper.Map<Course>(request);
+            if (course.DiscountPrice <= 0) course.DiscountEndsAt = DateTime.UtcNow;
             course.InstructorId = instructorId;
             await _uof.GetRepository<Guid,Course>().AddAsync(course);
             await _uof.SaveChangesAsync(ct);
@@ -71,6 +80,12 @@ namespace Services
             if(course is null) throw new CourseNotFoundException(Id);
 
             _mapper.Map(request,course);
+
+            if (course.DiscountPrice > 0 && course.DiscountPrice >= course.Price)
+                throw new BadRequestException("Discount price must be less than the course price");
+
+            if (course.DiscountPrice <= 0) course.DiscountEndsAt = DateTime.UtcNow;
+
             course.UpdatedAt = DateTime.UtcNow;
             await _uof.SaveChangesAsync(ct);
         }

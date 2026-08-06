@@ -1,3 +1,4 @@
+using Shared.DTOS;
 using Shared.DTOS.Courses;
 
 namespace ServicesAbstraction.Courses
