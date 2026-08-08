@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using ServicesAbstraction;
 
-namespace Services
+namespace Services.Cache
 {
     public class CacheService(IDistributedCache _distributedCache) : ICacheService
     {

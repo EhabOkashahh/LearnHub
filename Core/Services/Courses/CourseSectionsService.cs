@@ -7,7 +7,7 @@ using Services.Specifications.CoursesSpecifications;
 using ServicesAbstraction.Courses;
 using Shared.DTOS.Courses;
 
-namespace Services
+namespace Services.Courses
 {
     public class CourseSectionsService(IUnitOfWork _uof, IMapper _mapper) : ICourseSectionsService
     {

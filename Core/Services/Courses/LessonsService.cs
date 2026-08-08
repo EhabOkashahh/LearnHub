@@ -8,7 +8,7 @@ using ServicesAbstraction.Courses;
 using Shared.DTOS;
 using Shared.DTOS.Courses;
 
-namespace Services
+namespace Services.Courses
 {
     public class LessonsService(IUnitOfWork _uof, IMapper _mapper) : ILessonsService
     {

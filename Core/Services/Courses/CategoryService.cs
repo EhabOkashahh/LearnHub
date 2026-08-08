@@ -7,7 +7,7 @@ using Services.Specifications.CategorySpecifications;
 using Shared.DTOS;
 using Shared.DTOS.Categories;
 
-namespace Services
+namespace Services.Courses
 {
     public class CategoryService(IUnitOfWork _uof, IMapper _mapper) : ICategoriesService
     {

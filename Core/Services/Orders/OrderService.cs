@@ -14,7 +14,7 @@ using ServicesAbstraction.Courses;
 using Shared.DTOS;
 using Shared.DTOS.Orders;
 
-namespace Services
+namespace Services.Orders
 {
     public class OrderService(ICartRepository _cartRepo , IUnitOfWork _uof, IMapper _mapper) : IOrderService
     {
@@ -41,9 +41,17 @@ namespace Services
             };
 
         }
-        public Task<CheckoutResponse> CreateOrderAsync(string userId, CancellationToken ct)
+        public async Task<CheckoutResponse> CreateOrderAsync(string userId, CancellationToken ct)
         {
+            var cart = await  _cartRepo.GetCartAsync(userId);
+            var OrderSummary = await OrderSummaryAsync(userId,ct);
+
+            if(cart.Items.ToList().Count != OrderSummary.Items.ToList().Count)
+            {
+                
+            }
             
+
         }
 
         public Task<PaginatedResponse<OrderResponse>> GetMyOrdersAsync(string userId, OrderQueryParams queryParams, CancellationToken ct)

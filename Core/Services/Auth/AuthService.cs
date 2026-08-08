@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 
-namespace Services
+namespace Services.Auth
 {
     public class AuthService(UserManager<AppUser> _userManger, IMapper _mapper, IOptions<JwtOptions> _jwtOptions) : IAuthService
     {

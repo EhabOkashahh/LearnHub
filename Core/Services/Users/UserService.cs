@@ -10,7 +10,7 @@ using ServicesAbstraction.Users;
 using Shared.DTOS.Users;
 using Domain.Exceptions.BadRequestExceptions;
 
-namespace Services
+namespace Services.Users
 {
     public class UserService(
         UserManager<AppUser> _userManager,

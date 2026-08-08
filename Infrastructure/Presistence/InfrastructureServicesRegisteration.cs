@@ -12,13 +12,6 @@ using Presistence.Repository;
 using RedLockNet;
 using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
-using Services;
-using ServicesAbstraction;
-using ServicesAbstraction.Cart;
-using ServicesAbstraction.Categories;
-using ServicesAbstraction.Courses;
-using ServicesAbstraction.Users;
-
 using StackExchange.Redis;
 
 namespace Presistence
@@ -34,18 +27,9 @@ namespace Presistence
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<ICoursesService, CourseService>();
-            services.AddScoped<ICourseSectionsService, CourseSectionsService>();
-            services.AddScoped<ILessonsService, LessonsService>();
-            services.AddScoped<ICategoriesService, CategoryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICartRepository,CartRepository>();
-            services.AddScoped<ICartServices,CartServices>();
-            services.AddScoped<ICacheService,CacheService>();
             services.AddScoped<IDbInitializer,DbInitializer>();
-            services.AddScoped<IEnrollmentsService, EnrollmentsService>();
-            services.AddScoped<IUsersService, UserService>();
-            services.AddScoped<IAdminService, AdminServices>();
             services.AddScoped<SoftDeleteInterceptor>();
             
             services.AddSingleton<IConnectionMultiplexer>((sp) => {

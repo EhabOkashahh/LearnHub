@@ -10,7 +10,7 @@ using ServicesAbstraction.Cart;
 using Shared.DTOS.Cart;
 using RedLockNet;
 
-namespace Services
+namespace Services.Cart
 {
     public class CartServices(
         ICartRepository _cartRepository,
@@ -26,8 +26,14 @@ namespace Services
                 return new CartResponse { Id = userId, Items = [] };
 
             var courseIds = cart.Items.Select(i => i.CourseId).ToList();
-            var spec = new CoursesByIdsSpec(courseIds);
-            var courses = await _uof.GetRepository<Guid, Course>().GetAllAsync(spec, ct);
+            var courses = await _uof.GetRepository<Guid, Course>().GetAllAsync(new CoursesByIdsSpec(courseIds), ct);
+
+            var invalidIds = courseIds.Except(courses.Select(c => c.Id)).ToList();
+            if(invalidIds.Count > 0)
+            {
+                cart.Items.RemoveAll(i => invalidIds.Contains(i.CourseId));
+                await _cartRepository.AddCartAsync(cart,_cartTtl);
+            }
 
             var items = _mapper.Map<IEnumerable<CartItemResponse>>(courses);
 
@@ -47,7 +53,7 @@ namespace Services
             if(!redlock.IsAcquired) throw new BadRequestException("Cart is busy, try again");
 
             var cart = await _cartRepository.GetCartAsync(userId)
-                ?? new Cart { Id = userId, Items = [] };
+                ?? new Domain.Entities.Cart.Cart { Id = userId, Items = [] };
 
             if (cart.Items.Any(i => i.CourseId == courseId))
                 throw new BadRequestException("This course is already in your cart");

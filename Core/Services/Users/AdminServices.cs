@@ -11,7 +11,7 @@ using Shared.DTOS;
 using Shared.DTOS.Admin;
 using Shared.DTOS.Courses;
 
-namespace Services
+namespace Services.Users
 {
     public class AdminServices(
         IUnitOfWork _uof,

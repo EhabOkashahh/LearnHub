@@ -9,7 +9,7 @@ using Domain.Exceptions.NotFoundExceptions;
 using Domain.Exceptions.BadRequestExceptions;
 using Services.Specifications.CategorySpecifications;
 using Shared.DTOS;
-namespace Services
+namespace Services.Courses
 {
     public class CourseService(IUnitOfWork _uof, IMapper _mapper) : ICoursesService
     {

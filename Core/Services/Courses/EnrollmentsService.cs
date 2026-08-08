@@ -10,7 +10,7 @@ using ServicesAbstraction.Courses;
 using Shared.DTOS;
 using Shared.DTOS.Courses;
 
-namespace Services
+namespace Services.Courses
 {
     public class EnrollmentsService(IUnitOfWork _uof,UserManager<AppUser> _userManager, IMapper _mapper) : IEnrollmentsService
     {
